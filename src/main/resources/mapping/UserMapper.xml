@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.bupt.pojo.User">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="L_NAME" jdbcType="VARCHAR" property="lName" />
+    <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+    <result column="ROLE" jdbcType="VARCHAR" property="role" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="DEPT" jdbcType="VARCHAR" property="dept" />
+    <result column="POST" jdbcType="VARCHAR" property="post" />
+    <result column="PHONE" jdbcType="VARCHAR" property="phone" />
+    <result column="EMAIL" jdbcType="VARCHAR" property="email" />
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ROLE, NAME, DEPT, POST, PHONE, EMAIL, REMARK
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bupt.pojo.User">
+    insert into user (ID, L_NAME, PASSWORD, 
+      ROLE, NAME, DEPT, POST, 
+      PHONE, EMAIL, REMARK
+      )
+    values (#{id,jdbcType=INTEGER}, #{lName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{role,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{dept,jdbcType=VARCHAR}, #{post,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bupt.pojo.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="lName != null">
+        L_NAME,
+      </if>
+      <if test="password != null">
+        PASSWORD,
+      </if>
+      <if test="role != null">
+        ROLE,
+      </if>
+      <if test="name != null">
+        NAME,
+      </if>
+      <if test="dept != null">
+        DEPT,
+      </if>
+      <if test="post != null">
+        POST,
+      </if>
+      <if test="phone != null">
+        PHONE,
+      </if>
+      <if test="email != null">
+        EMAIL,
+      </if>
+      <if test="remark != null">
+        REMARK,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="lName != null">
+        #{lName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        #{role,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="dept != null">
+        #{dept,jdbcType=VARCHAR},
+      </if>
+      <if test="post != null">
+        #{post,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bupt.pojo.User">
+    update user
+    <set>
+      <if test="lName != null">
+        L_NAME = #{lName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        PASSWORD = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="role != null">
+        ROLE = #{role,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="dept != null">
+        DEPT = #{dept,jdbcType=VARCHAR},
+      </if>
+      <if test="post != null">
+        POST = #{post,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bupt.pojo.User">
+    update user
+    set L_NAME = #{lName,jdbcType=VARCHAR},
+      PASSWORD = #{password,jdbcType=VARCHAR},
+      ROLE = #{role,jdbcType=VARCHAR},
+      NAME = #{name,jdbcType=VARCHAR},
+      DEPT = #{dept,jdbcType=VARCHAR},
+      POST = #{post,jdbcType=VARCHAR},
+      PHONE = #{phone,jdbcType=VARCHAR},
+      EMAIL = #{email,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="authentication" resultType="java.lang.Integer">
+    select count(*) from user where L_NAME= #{l_name,jdbcType=VARCHAR} and PASSWORD = #{password,jdbcType=VARCHAR}
+  </select>
+  <select id="selectUsers" parameterType="com.bupt.pojo.User" resultType="hashMap">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    <where>
+      <if test="lName != null">
+        L_NAME = #{lName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        and PASSWORD = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="ROLE!=null">
+        and ROLE = #{ROLE,jdbcType=VARCHAR}
+      </if>
+      <if test="DEPT!=null">
+        and DEPT = #{DEPT,jdbcType=VARCHAR}
+      </if>
+      <if test="POST!=null">
+        and POST = #{POST,jdbcType=VARCHAR}
+      </if>
+      <if test="PHONE!=null">
+        and PHONE = #{PHONE,jdbcType=VARCHAR}
+      </if>
+      <if test="EMAIL!=null">
+        and EMAIL = #{EMAIL,jdbcType=VARCHAR}
+      </if>
+    </where>
+    limit #{S_INDEX,jdbcType=INTEGER},#{MAX_NUM,jdbcType=INTEGER}
+  </select>
+
+  <select id="login" parameterType="com.bupt.pojo.User" resultType="Object">
+    select ID from user where L_NAME = #{lName,jdbcType=VARCHAR} and PASSWORD = #{password,jdbcType=VARCHAR}
+  </select>
+</mapper>

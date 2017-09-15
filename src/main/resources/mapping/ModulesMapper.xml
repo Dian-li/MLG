@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.dao.ModulesMapper">
+  <resultMap id="BaseResultMap" type="com.bupt.pojo.Modules">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="PARALLEL" jdbcType="INTEGER" property="parallel" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+  </resultMap>
+  <sql id="Base_Column_List">
+     ADDRESS,STATUS, PARALLEL
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from modules
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from modules
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bupt.pojo.Modules">
+    insert into modules (ID, STATUS, PARALLEL, 
+      ADDRESS)
+    values (#{id,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{parallel,jdbcType=INTEGER}, 
+      #{address,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bupt.pojo.Modules">
+    insert into modules
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="parallel != null">
+        PARALLEL,
+      </if>
+      <if test="address != null">
+        ADDRESS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="parallel != null">
+        #{parallel,jdbcType=INTEGER},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bupt.pojo.Modules">
+    update modules
+    <set>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="parallel != null">
+        PARALLEL = #{parallel,jdbcType=INTEGER},
+      </if>
+      <if test="address != null">
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bupt.pojo.Modules">
+    update modules
+    set STATUS = #{status,jdbcType=VARCHAR},
+      PARALLEL = #{parallel,jdbcType=INTEGER},
+      ADDRESS = #{address,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectModules" parameterType="hashMap" resultType="hashMap">
+    select
+    <include refid="Base_Column_List" />
+    from modules
+    <where>
+        <if test="ADDRESS!=null">
+           ADDRESS = #{ADDRESS,jdbcType=VARCHAR}
+        </if>
+        <if test="STATUS!=null">
+           and STATUS = #{STATUS,jdbcType=VARCHAR}
+        </if>
+      <if test="PARALLEL!=null">
+        and PARALLEL = #{PARALLEL,jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
+
+  <delete id="deleteByAddress" parameterType="String">
+    delete from modules
+    where ADDRESS = #{address,jdbcType=VARCHAR}
+  </delete>
+</mapper>
