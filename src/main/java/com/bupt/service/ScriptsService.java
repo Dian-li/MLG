@@ -1,6 +1,8 @@
 package com.bupt.service;
 
 import com.bupt.Enum.Address;
+import com.bupt.Enum.Protocol;
+import com.bupt.Enum.SType;
 import com.bupt.Enum.ScriptType;
 import com.bupt.dao.ScriptsMapper;
 
@@ -45,6 +47,8 @@ public class ScriptsService {
         set.add("SCRIPTDATE");
         set.add("SCRIPTNAME");
         set.add("SCRIPTTYPE");
+        set.add("PROTOCOL");
+        set.add("STYPE");
         set.add("S_INDEX");
         set.add("MAX_NUM");
         Map map = MapUtil.ConvertMap(paramMap,set);
@@ -59,20 +63,20 @@ public class ScriptsService {
     /**
      * delete script
      * @param scriptName
-     * @param scriptType
-     * @param scriptPath
      * @return
      */
-    public int deleteScript(String scriptName,String scriptType,String scriptPath){
+    public int deleteScript(String scriptName){
+        String scriptPath = this.selectPathByName(scriptName);
+        ScriptType scriptType = ScriptType.getScriptType(scriptName);
         FileUtil.deleteFile(scriptPath);
-        if(scriptType.equals(ScriptType.ORAGINAL.getType())){
+        if(ScriptType.ORAGINAL.getType().equals(scriptType)){
             String tempFile = FileUtil.getPath(scriptPath);
-            FileUtil.deleteDirectory(tempFile);
+            FileUtil.deleteDirectory(tempFile);//delete the temp dir
         }
         Scripts scripts = new Scripts();
         scripts.setScriptname(scriptName);
         scripts.setFilepath(scriptPath);
-        scripts.setScripttype(scriptType);
+        scripts.setScripttype(scriptType.getType());
 
         return this.scriptsMapper.deleteByScript(scripts);
     }
@@ -85,19 +89,22 @@ public class ScriptsService {
      * @return
      */
     public Result handleScript(String scriptName,String scriptPath,String username){
-        ScriptType type = FileUtil.getScriptType(scriptName);
+        Protocol type = Protocol.getProtocolType(scriptName);
         String outfilename="";
         String output="";
-        if(type.equals(ScriptType.HTTP)){
+        Scripts scripts = new Scripts();
+        if(type.equals(Protocol.HTTP)){
             output = Address.getUserTestAddress(username);
             this.httpScriptsHandle.httpHandle(scriptPath,scriptName,output);
             outfilename= scriptName.replace("saz","xml");
-        }else if(type.equals(ScriptType.Socket)){
+            scripts.setProtocol(Protocol.HTTP.getProtocol());
+        }else if(type.equals(Protocol.SOCKET)){
             output = Address.getUserTestAddress(username);
             this.socketScriptsHandle.socketHandle(scriptPath,scriptName,output);
             outfilename= scriptName.replace("pcap","xml");
+            scripts.setProtocol(Protocol.SOCKET.getProtocol());
         }
-        Scripts scripts = new Scripts();
+        scripts.setStype(SType.MODULES.getsType());
         scripts.setFilepath(output+outfilename);
         scripts.setScriptname(outfilename);
         scripts.setScripttype(ScriptType.TEST.getType());
@@ -151,4 +158,10 @@ public class ScriptsService {
         fw.close();
     }
 
+
+    public String selectPathByName(String scriptname){
+        return this.scriptsMapper.selectPathByName(scriptname);
+    }
+
+    public int selectScriptTimeByName(String scriptname){ return this.scriptsMapper.selectScriptTimeByName(scriptname);}
 }

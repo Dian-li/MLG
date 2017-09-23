@@ -2,18 +2,22 @@ package com.bupt.rest;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.bupt.Enum.Address;
 import com.bupt.Enum.ResultEnum;
+import com.bupt.Enum.TaskStatus;
 import com.bupt.pojo.Result;
 import com.bupt.service.DataCollectionService;
+import com.bupt.service.TaskService;
+import com.bupt.service.TestcaseService;
+import com.bupt.util.DateUtil;
 import com.bupt.util.RedisUtil;
 import com.bupt.util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.List;
 import java.util.Map;
 @Component
 @Path("/test")
@@ -22,18 +26,22 @@ public class TestRest {
     private RedisUtil redisUtil;
     @Autowired
     private DataCollectionService dataCollectionService;
+    @Autowired
+    private TaskService taskService;
+    @Autowired
+    private TestcaseService testcaseService;
 
     @GET
     @Path("/dataCollection")
     @Produces("application/json")
-    public Response getRedisData() {
+    public Response getRedisData(@QueryParam("TESTCASENAME")String testcaseName) {
         JSONObject resultJson = new JSONObject();
         Result result = new Result();
         try{
-            Map<Object,Object> cpuMap= this.redisUtil.getAllKeyValue("CPU");
-            Map<Object,Object> ioMap= this.redisUtil.getAllKeyValue("IO");
-            Map<Object,Object> netMap = this.redisUtil.getAllKeyValue("NET");
-            Map<Object,Object> memMap = this.redisUtil.getAllKeyValue("MEM");
+            Map<Object,Object> cpuMap= this.redisUtil.getAllKeyValue(testcaseName+"_CPU");
+            Map<Object,Object> ioMap= this.redisUtil.getAllKeyValue(testcaseName+"_IO");
+            Map<Object,Object> netMap = this.redisUtil.getAllKeyValue(testcaseName+"_NET");
+            Map<Object,Object> memMap = this.redisUtil.getAllKeyValue(testcaseName+"_MEM");
             JSONObject cpuObject = new JSONObject();
             JSONObject ioObject = new JSONObject();
             JSONObject netObject = new JSONObject();
@@ -94,13 +102,35 @@ public class TestRest {
         return ResponseUtil.SupportCORS(resultJson.toJSONString());
     }
 
-    @GET
+    @POST
     @Path("/testBegin")
     @Produces("application/json")
-    public Response startTest(){
+    public Response startTest(@FormParam("TESTCASENAME") String testcaseName){
         Result result = new Result();
         try{
-            this.dataCollectionService.startCollect();
+            this.testcaseService.updateStatus(TaskStatus.RUNNING.getStatus(),testcaseName);
+            this.dataCollectionService.startCollect("dian",testcaseName);
+            result = ResultEnum.SUCCESS.getResult();
+        }catch (Exception e){
+            result.setErrCode(String.valueOf(e.hashCode()));
+            result.setIndex("-1");
+            result.setErrText(e.getMessage());
+        }
+        return ResponseUtil.SupportCORS(result);
+    }
+
+    @POST
+    @Path("/testEnd")
+    @Produces("application/json")
+    public Response endTest(@FormParam("TESTCASENAME") String testcaseName){
+        Result result = new Result();
+        try{
+            this.dataCollectionService.stopCollect();
+            this.testcaseService.updateStatus(TaskStatus.FINISH.getStatus(),testcaseName);
+            this.redisUtil.deleteKey(testcaseName+"_CPU");
+            this.redisUtil.deleteKey(testcaseName+"_IO");
+            this.redisUtil.deleteKey(testcaseName+"_NET");
+            this.redisUtil.deleteKey(testcaseName+"_MEM");
             result = ResultEnum.SUCCESS.getResult();
         }catch (Exception e){
             result.setErrCode(String.valueOf(e.hashCode()));
@@ -111,18 +141,32 @@ public class TestRest {
     }
 
     @GET
-    @Path("/testEnd")
+    @Path("listTasks")
     @Produces("application/json")
-    public Response endTest(){
+    public Response listTask(@QueryParam("STATUS")String status){
+        JSONObject resultJson = new JSONObject();
         Result result = new Result();
-        try{
-            this.dataCollectionService.stopCollect();
+        List<Map<String,Object>> tasks = null;
+        try {
+            if (status.equals("Running"))
+                tasks = this.taskService.listTasks(TaskStatus.RUNNING.getStatus());
+            else if(status.equals("Finish"))
+                tasks = this.taskService.listTasks(TaskStatus.FINISH.getStatus());
             result = ResultEnum.SUCCESS.getResult();
+            resultJson.put("TASKS",tasks);
+
         }catch (Exception e){
-            result.setErrCode(String.valueOf(e.hashCode()));
             result.setIndex("-1");
             result.setErrText(e.getMessage());
+            result.setErrCode(String.valueOf(e.hashCode()));
         }
-        return ResponseUtil.SupportCORS(result);
+        resultJson.put("RET_INFO",result);
+        return ResponseUtil.SupportCORS(JSON.toJSONString(resultJson));
+    }
+    @GET
+    @Path("historyTasks")
+    @Produces("application/json")
+    public Response historyTest(@QueryParam("TESTCASENAME")String testcasename){
+        return null;
     }
 }

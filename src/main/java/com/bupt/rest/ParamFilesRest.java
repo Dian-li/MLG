@@ -10,6 +10,7 @@ import com.bupt.pojo.Scripts;
 import com.bupt.service.ParamFileService;
 import com.bupt.service.ResultService;
 import com.bupt.util.DateUtil;
+import com.bupt.util.FileUtil;
 import com.bupt.util.MapUtil;
 import com.bupt.util.ResponseUtil;
 import com.sun.jersey.core.header.FormDataContentDisposition;
@@ -41,7 +42,7 @@ public class ParamFilesRest {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     //@Consumes("application/octet-stream")
     public Response upload(@FormDataParam("file") InputStream fileInputStream,
-                           @FormDataParam("file") FormDataContentDisposition contentDispositionHeader)throws IOException {
+                           @FormDataParam("file") FormDataContentDisposition contentDispositionHeader,@FormDataParam("PROTOCOL")InputStream protocol,@FormDataParam("REMARK")InputStream rematk)throws IOException {
         String fileName = contentDispositionHeader.getFileName();
         String t=contentDispositionHeader.getName();
         //httpServletRequest.g
@@ -74,7 +75,8 @@ public class ParamFilesRest {
         System.out.println(file.getAbsolutePath());
         paramsfile.setFilepath(file.getAbsolutePath());
         paramsfile.setUserid(1);
-
+        paramsfile.setProtocol(FileUtil.inputStreamToString(protocol));
+        paramsfile.setRemark(FileUtil.inputStreamToString(rematk));
         Result result = new Result();
         try{
             int code = this.paramFileService.insertParamFile(paramsfile);
@@ -94,7 +96,8 @@ public class ParamFilesRest {
     @Consumes({ MediaType.APPLICATION_FORM_URLENCODED,
             MediaType.APPLICATION_JSON })
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public Response downloadFile(@QueryParam("FILEPATH")String filepath) {
+    public Response downloadFile(@QueryParam("FILENAME")String filename) {
+        String filepath = this.paramFileService.selectPathByName(filename);
         File file = new File(filepath);
         if (file.isFile() && file.exists()) {
             String mt = new MimetypesFileTypeMap().getContentType(file);
@@ -120,14 +123,7 @@ public class ParamFilesRest {
         Result result = new Result();
         try{
             List<Map<String,Object>> map = this.paramFileService.selectScript(paramMap);
-            List<String> columns;
-            if(map.size()>0){
-                columns = MapUtil.getColumns(map);
-            }else{
-                columns=null;
-            }
             resultJson.put("PARAMFILES",map);
-            resultJson.put("COLUMNS",columns);
             result = ResultService.Success();
 
         }catch(Exception e){
@@ -142,13 +138,14 @@ public class ParamFilesRest {
     @POST
     @Path("deleteParamFile")
     @Produces("application/json")
-    public Response deleteScript(@FormParam("FILENAME")String filename,@FormParam("FILEPATH")String path){
-        if(filename==null || path==null){
+    public Response deleteScript(@FormParam("FILENAME")String filename){
+
+        if(filename==null){
             return ResponseUtil.SupportCORS(ResultService.Error("1","no such file"));
         }
         Result result = new Result();
         try{
-            int code = this.paramFileService.deleteScript(filename, path);
+            int code = this.paramFileService.deleteScript(filename);
             if(code>0){
                 result = this.resultService.Success();
             }
@@ -162,7 +159,8 @@ public class ParamFilesRest {
     @POST
     @Path("editParamFile")
     @Produces("application/json")
-    public Response editScript(@FormParam("FILENAME")String filename,@FormParam("FILEPATH")String path){
+    public Response editScript(@FormParam("FILENAME")String filename){
+        String path = this.paramFileService.selectPathByName(filename);
         if(filename==null || path==null){
             return ResponseUtil.SupportCORS(ResultService.Error("1","no such file"));
         }
@@ -185,7 +183,8 @@ public class ParamFilesRest {
     @POST
     @Path("saveParamContext")
     @Produces("application/json")
-    public Response editScript(@FormParam("FILENAME")String scriptname,@FormParam("FILEPATH")String path,@FormParam("FILECONTEXT")String context){
+    public Response editScript(@FormParam("FILENAME")String scriptname,@FormParam("FILECONTEXT")String context){
+        String path = this.paramFileService.selectPathByName(scriptname);
         if(scriptname==null || path==null || context==null){
             return ResponseUtil.SupportCORS(ResultService.Error("1","no such file"));
         }

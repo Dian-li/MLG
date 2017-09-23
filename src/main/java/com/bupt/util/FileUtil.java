@@ -1,8 +1,11 @@
 package com.bupt.util;
 
+import com.bupt.Enum.Protocol;
 import com.bupt.Enum.ScriptType;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Dian on 2017/8/7.
@@ -63,7 +66,7 @@ public class FileUtil {
         }
     }
 
-    public static  boolean deleteFile(String filePath) {// 删除单个文件
+    public static boolean deleteFile(String filePath) {// 删除单个文件
         boolean flag = false;
         File file = new File(filePath);
         if (file.isFile() && file.exists()) {// 路径为文件且不为空则进行删除
@@ -203,15 +206,7 @@ public class FileUtil {
         return filepath.substring(0,filepath.indexOf("."));
     }
 
-    public static ScriptType getScriptType(String filename){
-        if(filename.toLowerCase().indexOf("saz")!=-1) {
-            return ScriptType.HTTP;
-        }else if(filename.toLowerCase().indexOf("pcap")!=-1){
-            return ScriptType.Socket;
-        }else{
-            return ScriptType.NOTFOUND;
-        }
-    }
+
 
     /**
      * copy file
@@ -240,5 +235,66 @@ public class FileUtil {
             input.close();
             output.close();
         }
+    }
+
+    /**
+     * 获取文件总行数
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    public static long getTotalLines(File file) throws IOException {
+        FileReader in = new FileReader(file);
+        LineNumberReader reader = new LineNumberReader(in);
+        String s = reader.readLine();
+        long lines = 0L;
+        while (s != null) {
+            lines++;
+            s = reader.readLine();
+        }
+        reader.close();
+        in.close();
+        return lines;
+    }
+
+    // 读取文件指定行。
+    public static List<String> readAppointedLineNumber(File sourceFile, int lineNumber,int offset)
+            throws IOException {
+        List<String> result = new ArrayList<String>();
+        FileReader in = new FileReader(sourceFile);
+        LineNumberReader reader = new LineNumberReader(in);
+        String s = "";
+        if (lineNumber <= 0 || lineNumber > getTotalLines(sourceFile)) {
+            System.out.println("不在文件的行数范围(1至总行数)之内。");
+            System.exit(0);
+        }
+        int lines = 0;
+        while (s != null && offset!=0) {
+            if((lines - lineNumber) < 0){
+                lines++;
+                s = reader.readLine();
+                continue;
+            }
+            //找到该行
+            //System.out.println(s);
+            result.add(s);
+            offset--;
+            lines++;
+            s = reader.readLine();
+
+        }
+        reader.close();
+        in.close();
+        return result;
+    }
+    //inputStream to String
+    public static String inputStreamToString(InputStream inputStream)throws IOException{
+        StringBuffer out = new StringBuffer();
+        byte[] b = new byte[4096];
+        for (int n; (n = inputStream.read(b)) != -1;) {
+            out.append(new String(b, 0, n));
+        }
+        //System.out.println(out.toString());
+        return out.toString();
     }
 }

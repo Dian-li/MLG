@@ -14,6 +14,10 @@ public class Paramsfile {
 
     private String filepath;
 
+    private String protocol;
+
+    private String remark;
+
     public Integer getId() {
         return id;
     }
@@ -52,5 +56,21 @@ public class Paramsfile {
 
     public void setFilepath(String filepath) {
         this.filepath = filepath == null ? null : filepath.trim();
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

@@ -40,6 +40,8 @@ public class ParamFileService {
         set.add("DATE");
         set.add("FILENAME");
         set.add("FILEPATH");
+        set.add("PROTOCOL");
+        set.add("REMARK");
         set.add("S_INDEX");
         set.add("MAX_NUM");
         Map map = MapUtil.ConvertMap(paramMap,set);
@@ -92,15 +94,19 @@ public class ParamFileService {
     /**
      * delete param file
      * @param paramFileName
-     * @param paramFilePath
      * @return
      */
-    public int deleteScript(String paramFileName,String paramFilePath){
+    public int deleteScript(String paramFileName){
+        String paramFilePath = this.paramsfileMapper.selectPathByName(paramFileName);
         FileUtil.deleteFile(paramFilePath);
         Paramsfile paramsfile = new Paramsfile();
         paramsfile.setFilename(paramFileName);
         paramsfile.setFilepath(paramFilePath);
 
         return this.paramsfileMapper.deleteByParamFile(paramsfile);
+    }
+
+    public String selectPathByName(String filename){
+        return this.paramsfileMapper.selectPathByName(filename);
     }
 }

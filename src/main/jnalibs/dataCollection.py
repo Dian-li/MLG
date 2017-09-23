@@ -8,22 +8,36 @@ import signal
 import os
 import string
 import redis
+import chardet
 from pexpect import pxssh
 
 r = redis.Redis(host='localhost',port=6379,db=0)
 
+sema = threading.Semaphore(6)
+
+status = True
 
 class Collection:
-    global STATUS
+    STATUS = True
 
-    def __init__(self, status):
+
+    def __init__(self, status,host,user,password,path,cpuPath,ioPath,memPath,netPath):
         self.STATUS = status
+        self.host = host
+        self.user = user
+        self.password = password
+        self.path = path
+        self.cpuPath = cpuPath
+        self.ioPath = ioPath
+        self.memPath = memPath
+        self.netPath = netPath
+
 
     # 主方法
-    def ssh_command(self, user, host, password):
+    def ssh_command(self):
         try:
             s = pxssh.pxssh()
-            s.login(host, user, password)
+            s.login(self.host,self.user,self.password)
         except pxssh.ExceptionPxssh as e:
             print("pxssh failed on login.")
             print e
@@ -31,11 +45,13 @@ class Collection:
 
     # mem
     def mem_info(self, n):
-        with open('data/mem.txt', 'a') as f:
-            s = self.ssh_command("root", "10.108.211.214", "cintel")
+        with open(self.path+'/mem.txt', 'a') as f:
+            #print self.STATUS
+            s = self.ssh_command()
             f.write("date,time,mem,vmem\n")
-            while self.STATUS:
+            while Collection.STATUS:
                 print 'mem_info'
+                #print Collection.STATUS, self.STATUS
                 s.sendline('cat /proc/meminfo')
                 s.prompt()
                 #print 'meminfloop'
@@ -66,10 +82,10 @@ class Collection:
                 f.write(str("%.4f," % Rate_Mem))
                 f.write(str("%.4f" % Rate_Vm))
                 f.write("\n")
-                r.hset("MEM","date",nowdate)
-                r.hset("MEM","time",nowtime)
-                r.hset("MEM","mem",str("%.4f," % Rate_Mem))
-                r.hset("MEM","vmem",str("%.4f," % Rate_Vm))
+                r.hset(self.memPath,"date",nowdate)
+                r.hset(self.memPath,"time",nowtime)
+                r.hset(self.memPath,"mem",str("%.4f," % Rate_Mem))
+                r.hset(self.memPath,"vmem",str("%.4f," % Rate_Vm))
                 time.sleep(n)
     #get the mem and vmem of the progress
     def mem_data(self,s):
@@ -91,30 +107,30 @@ class Collection:
         pidmem = []
         pidvmem = []
         for pid in pidlist:
-            cmd_pidmem = "cat /proc/" + pid + "/status | grep 'VmRSS'"#get the mem
+            cmd_pidmem = "cat /proc/" + pid + "/status | grep --color=never 'VmRSS'"#get the mem
             s.sendline(cmd_pidmem)
             s.prompt()
             pidmemlist = re.split('\s+', s.before.replace(cmd_pidmem, '').strip())
             pidmem.append(string.atof(pidmemlist[1]))
-            cmd_pidvmem = "cat /proc/" + pid + "/status | grep 'VmData'"  # get the mem
+            cmd_pidvmem = "cat /proc/" + pid + "/status | grep --color=never 'VmData'"  # get the mem
             s.sendline(cmd_pidvmem)
             s.prompt()
             pidvmemlist = re.split('\s+', s.before.replace(cmd_pidvmem, '').strip())
             pidvmem.append(string.atof(pidvmemlist[1]))
         return pidmem,pidvmem
     def progress_mem_info(self,progress,n):
-        s = self.ssh_command("root", "10.108.211.214", "cintel")
-        getpid = "ps -def | grep " + progress + " | grep -v grep | awk '{ print $2 }' "
+        s = self.ssh_command()
+        getpid = "ps -def | grep --color=never " + progress + " | grep -v grep | awk '{ print $2 }' "
         s.sendline(getpid)
         s.prompt()
         pidlist = s.before.strip().split('\r\n')[1:]
         #print pidlist
         progressname = progress.strip().split('/')[-1]
         #print progressname
-        with open("data/mem_" + progressname + ".txt", 'a') as f:
+        with open(self.path+"/mem_" + progressname + ".txt", 'a') as f:
             f.write("date,time,mem,min_mem,max_mem,aver_mem,vmem,min_vmem,max_vmem,avermem\n")
             if len(pidlist) < 1: return
-            while self.STATUS:
+            while Collection.STATUS:
                 print "pmem_info"
                 mem1,vmem1 = self.mem_data(s)
                 pidmem1,pidvmem1 = self.progress_mem_data(pidlist, s)
@@ -145,10 +161,10 @@ class Collection:
 
     # io读写速度kb/s
     def io_info(self, n):
-        with open('data/io.txt', 'a') as f:
-            s = self.ssh_command("root", "10.108.211.214", "cintel")
+        with open(self.path+'/io.txt', 'a') as f:
+            s = self.ssh_command()
             print 'io'
-            s.sendline('cat /proc/diskstats | grep "sda"')
+            s.sendline("cat /proc/diskstats | grep --color=never sda")
             s.prompt()
             #print 'ioheader'
             f.write('date,time,')
@@ -161,30 +177,30 @@ class Collection:
                     f.write(io_info_header[i] + "_read,")
                     f.write(io_info_header[i] + "_write,")
             f.write('\n')
-            while self.STATUS:
+            while Collection.STATUS:
                 print "io_info"
                 nowdate = time.strftime("%Y-%m-%d", time.localtime())
                 f.write( time.strftime("%Y-%m-%d,", time.localtime()))
-                r.hset("IO","date",nowdate)
+                r.hset(self.ioPath,"date",nowdate)
                 nowtime = time.strftime("%H:%M:%S", time.localtime())
                 f.write(time.strftime("%H:%M:%S,", time.localtime()))
-                r.hset("IO","time",nowtime)
+                r.hset(self.ioPath,"time",nowtime)
                 #print 'ioloop'
                 for i in range(0, len(io_info_header)):
-                    str2 = 'iostat -d ' +str(io_info_header[i])+ ' -k '+str(n)+' 1 | grep "sda"'
+                    str2 ='iostat -d ' +str(io_info_header[i])+ ' -k '+str(n)+' 1 | grep --color=never sda '
                     s.sendline(str2)
                     s.prompt()
                     io_first = self.io_data(s.before)
                     for j in range(0, len(io_first)):
                         if i == (len(io_info_header)-1) and j==len(io_first)-1:
                             f.write(str(io_first[j]))
-                            r.hset("IO",io_info_header[i]+"_write",str(io_first[j]))
+                            r.hset(self.ioPath,io_info_header[i]+"_write",str(io_first[j]))
                         else:
                             f.write(str(io_first[j])+ ",")
                             if j%2==0:
-                                r.hset("IO", io_info_header[i] + "_read", str(io_first[j]))
+                                r.hset(self.ioPath, io_info_header[i] + "_read", str(io_first[j]))
                             else:
-                                r.hset("IO", io_info_header[i] + "_write", str(io_first[j]))
+                                r.hset(self.ioPath, io_info_header[i] + "_write", str(io_first[j]))
                 f.write("\n")
                 time.sleep(n)
                 # io表头
@@ -208,13 +224,15 @@ class Collection:
         return result
     #cpu data,first index is 1
     def cpu_data(self,s):
-        shell_cmd = "cat /proc/stat | grep 'cpu '"
+        shell_cmd = "cat /proc/stat | grep --color=never 'cpu '"
         s.sendline(shell_cmd)
         s.prompt()
         newstr = s.before.replace(shell_cmd, '')
         #print 'before: ' + newstr
         cpustat_info = newstr.strip().split()
+        print cpustat_info
         idel = string.atof(cpustat_info[4])
+
         user = string.atof(cpustat_info[1])
         cpu = string.atof(cpustat_info[1]) + string.atof(cpustat_info[2]) + string.atof(
             cpustat_info[3]) + string.atof(cpustat_info[4]) + string.atof(cpustat_info[5]) + string.atof(
@@ -223,39 +241,39 @@ class Collection:
         return idel,cpu
     # cpu,exec cmd and get user and sum cpu
     def cpu_info(self, n):
-        with open('data/cpu.txt', 'a') as f:
-            s = self.ssh_command("root", "10.108.211.214", "cintel")
+        with open(self.path+'/cpu.txt', 'a') as f:
+            s = self.ssh_command()
             f.write("date,time,user_cpu\n")
-            while self.STATUS:
+            while Collection.STATUS:
                 print 'cpu_info'
                 idel1,cpu1 = self.cpu_data(s)
                 time.sleep(n)
                 idel2,cpu2 = self.cpu_data(s)
                 nowdate = time.strftime("%Y-%m-%d", time.localtime())
                 f.write(time.strftime("%Y-%m-%d,", time.localtime()))
-                r.hset("CPU","date",nowdate)
+                r.hset(self.cpuPath,"date",nowdate)
                 nowtime = time.strftime("%H:%M:%S", time.localtime())
                 f.write(time.strftime("%H:%M:%S,", time.localtime()))
-                r.hset("CPU","time",nowtime)
+                r.hset(self.cpuPath,"time",nowtime)
                 cpu = 100*(1-((idel2 - idel1) / (cpu2 - cpu1)))
-                r.hset("CPU","cpu",str('%.4f' %cpu ))
+                r.hset(self.cpuPath,"cpu",str('%.4f' %cpu ))
                 f.write(str('%.4f' %cpu )+ "\n")
 
 
     #get the cpu info on one progress
     def progress_cpu_info(self,progress,n):
-        s = self.ssh_command("root", "10.108.211.214", "cintel")
-        getpid = "ps -def | grep "+ progress +"|grep -v grep | awk '{ print $2 }' "
+        s = self.ssh_command()
+        getpid = "ps -def | grep --color=never "+ progress +" |grep -v grep | awk '{ print $2 }' "
         s.sendline(getpid)
         s.prompt()
         pidlist = s.before.strip().split('\r\n')[1:]
         #print pidlist
         progressname = progress.strip().split('/')[-1]
         #print progressname
-        with open("data/cpu_"+progressname+".txt", 'a') as f:
+        with open(self.path+"/cpu_"+progressname+".txt", 'a') as f:
             f.write("date,time,cpu,min_cpu,max_cpu,aver_cpu\n")
             if len(pidlist)<1:return
-            while self.STATUS:
+            while Collection.STATUS:
                 print "pcpu_info"
                 user1,cpu1 = self.cpu_data(s)
                 progress1 = self.progress_cpu_data(pidlist,s)
@@ -287,8 +305,8 @@ class Collection:
         return cpusum
     # net,网络带宽，bytes/sec
     def net_info(self, n):
-        with open('data/net.txt', 'a') as f:
-            s = self.ssh_command("root", "10.108.211.214", "cintel")
+        with open(self.path+'/net.txt', 'a') as f:
+            s = self.ssh_command()
             shell_cmd = "cat /proc/net/dev"
             s.sendline(shell_cmd)
             s.prompt()
@@ -302,7 +320,7 @@ class Collection:
                     f.write(title_str[i] + "_recv,")
                     f.write(title_str[i] + "_send,")
             f.write("\n")
-            while self.STATUS:
+            while Collection.STATUS:
                 print "net_info"
                 shell_cmd = "cat /proc/net/dev"
                 s.sendline(shell_cmd)
@@ -317,21 +335,21 @@ class Collection:
 
                 nowdate = time.strftime("%Y-%m-%d", time.localtime())
                 f.write( time.strftime("%Y-%m-%d,", time.localtime()))
-                r.hset("NET","date",nowdate)
+                r.hset(self.netPath,"date",nowdate)
                 nowtime = time.strftime("%H:%M:%S", time.localtime())
                 f.write(time.strftime("%H:%M:%S,", time.localtime()))
-                r.hset("NET","time",nowtime)
+                r.hset(self.netPath,"time",nowtime)
                 j=0
                 for i in range(0, len(netresult)):
                     if (i == len(netresult) - 1):
                         f.write(str('%.4f' % (netresult[i] / n)))
-                        r.hset("NET",title_str[j]+"_send",str('%.4f' % (netresult[i] / n)))
+                        r.hset(self.netPath,title_str[j]+"_send",str('%.4f' % (netresult[i] / n)))
                     else:
                         f.write(str('%.4f' % (netresult[i] / n)) + ",")
                         if i%2==0:
-                            r.hset("NET",title_str[j]+"_recv",str('%.4f' % (netresult[i] / n)))
+                            r.hset(self.netPath,title_str[j]+"_recv",str('%.4f' % (netresult[i] / n)))
                         else:
-                            r.hset("NET", title_str[j] + "_send", str('%.4f' % (netresult[i] / n)))
+                            r.hset(self.netPath, title_str[j] + "_send", str('%.4f' % (netresult[i] / n)))
                     if i%2!=0:
                         j = j+1
                 f.write("\n")
@@ -363,59 +381,47 @@ class Collection:
                 os.rmdir(os.path.join(root, name))
         os.rmdir(dir)
 
-
 def quit(signum, frame):
     print 'You choose to stop me.'
     Collection.STATUS = False
+    status = False
+    # for n in range(len(threads)):
+    #     threads[n].stop()
     sys.exit()
 def stop():
     print "stop"
-def start():
-    try:
-        reload(sys)
-        sys.setdefaultencoding('utf-8')
-        collection = Collection(True)
-        signal.signal(signal.SIGINT, quit)
-        signal.signal(signal.SIGTERM, quit)
-        r.delete("IO")
-        r.delete("MEM")
-        r.delete("CPU")
-        r.delete("NET")
-        dir = 'data'
-        if not os.path.isdir(dir):
-            os.makedirs(dir)
-        else:
-            collection.delDir(dir)
-            os.makedirs(dir)
-        threads = []
-        t1 = threading.Thread(target=collection.mem_info, args=(2.0,))
-        threads.append(t1)
-        t2 = threading.Thread(target=collection.io_info, args=(2.0,))
-        threads.append(t2)
-        t3 = threading.Thread(target=collection.cpu_info,args=(2.0,))
-        threads.append(t3)
-        t4 = threading.Thread(target=collection.net_info, args=(2.0,))
-        threads.append(t4)
-        t5 = threading.Thread(target=collection.progress_cpu_info, args=("/usr/libexec/gvfsd-metadata",2.0))
-        threads.append(t5)
-        t6 = threading.Thread(target=collection.progress_mem_info, args=("/usr/libexec/gvfsd-metadata", 2.0))
-        threads.append(t6)
-        for n in range(len(threads)):
-            threads[n].start()
-    except Exception, e:
-        print str(e)
 if __name__ == '__main__':
+    signal.signal(signal.SIGTERM, quit)
     try:
         reload(sys)
         sys.setdefaultencoding('utf-8')
-        collection = Collection(True)
-        signal.signal(signal.SIGINT, quit)
-        signal.signal(signal.SIGTERM, quit)
-        r.delete("IO")
-        r.delete("MEM")
-        r.delete("CPU")
-        r.delete("NET")
-        dir = 'data'
+        myhost = sys.argv[1]
+        myuser = sys.argv[2]
+        mypassword = sys.argv[3]
+        mypath = sys.argv[4]
+        myTestcaseName = sys.argv[5]
+        dir = mypath
+        ioPath = myTestcaseName + "_IO"
+        cpuPath = myTestcaseName + "_CPU"
+        memPath = myTestcaseName + "_MEM"
+        netPath = myTestcaseName + "_NET"
+        collection = Collection(True,myhost,myuser,mypassword,mypath,cpuPath,ioPath,memPath,netPath)
+        if r.exists(ioPath):
+            r.delete(ioPath)
+        if r.exists(memPath):
+            r.delete(memPath)
+        if r.exists(cpuPath):
+            r.delete(cpuPath)
+        if r.exists(netPath):
+            r.delete(netPath)
+
+        for arg in sys.argv:
+            print arg
+        # Collection.host = "localhost"
+        # Collection.path = "data2"
+        # Collection.user = "dian"
+        # Collection.password = "1234"
+
         if not os.path.isdir(dir):
             os.makedirs(dir)
         else:
@@ -430,11 +436,22 @@ if __name__ == '__main__':
         threads.append(t3)
         t4 = threading.Thread(target=collection.net_info, args=(2.0,))
         threads.append(t4)
-        t5 = threading.Thread(target=collection.progress_cpu_info, args=("/usr/libexec/gvfsd-metadata",2.0))
-        threads.append(t5)
-        t6 = threading.Thread(target=collection.progress_mem_info, args=("/usr/libexec/gvfsd-metadata", 2.0))
-        threads.append(t6)
+        # t5 = threading.Thread(target=collection.progress_cpu_info, args=("/usr/libexec/gvfsd-metadata",2.0))
+        # threads.append(t5)
+        # t6 = threading.Thread(target=collection.progress_mem_info, args=("/usr/libexec/gvfsd-metadata", 2.0))
+        # threads.append(t6)
+
         for n in range(len(threads)):
+           # sema.acquire(True)
             threads[n].start()
+
+        # for th in threads:
+        #     th.join()
+        #sema.acquire(True)
+        while status:
+            #print "while"
+           # print status
+            time.sleep(1)
+        print "Finish！"
     except Exception, e:
         print str(e)

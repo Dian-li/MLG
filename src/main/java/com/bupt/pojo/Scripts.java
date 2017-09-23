@@ -11,6 +11,12 @@ public class Scripts {
 
     private String filepath;
 
+    private String protocol;
+
+    private int exetime;
+
+    private String stype;//modules or notmodules
+
     private String remark;
 
     private Integer userid;
@@ -69,5 +75,29 @@ public class Scripts {
 
     public void setUserid(Integer userid) {
         this.userid = userid;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    public int getExetime() {
+        return exetime;
+    }
+
+    public void setExetime(int exetime) {
+        this.exetime = exetime;
+    }
+
+    public String getStype() {
+        return stype;
+    }
+
+    public void setStype(String stype) {
+        this.stype = stype;
     }
 }

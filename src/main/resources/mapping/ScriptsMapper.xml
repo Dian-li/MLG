@@ -7,6 +7,9 @@
     <result column="SCRIPTDATE" jdbcType="VARCHAR" property="scriptdate" />
     <result column="SCRIPTTYPE" jdbcType="VARCHAR" property="scripttype" />
     <result column="FILEPATH" jdbcType="VARCHAR" property="filepath" />
+    <result column="PROTOCOL" jdbcType="VARCHAR" property="protocol"/>
+    <result column="EXETIME" jdbcType="INTEGER" property="exetime"/>
+    <result column="STYPE" jdbcType="VARCHAR" property="stype"/>
     <result column="REMARK" jdbcType="VARCHAR" property="remark" />
     <result column="USERID" jdbcType="INTEGER" property="userid" />
   </resultMap>
@@ -55,6 +58,15 @@
       <if test="userid != null">
         USERID,
       </if>
+      <if test="stype != null">
+        STYPE,
+      </if>
+      <if test="protocol != null">
+        PROTOCOL,
+      </if>
+      <if test="exetime != null">
+        EXETIME
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -77,6 +89,15 @@
       </if>
       <if test="userid != null">
         #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="stype != null">
+        #{stype,jdbcType=VARCHAR},
+      </if>
+      <if test="protocol != null">
+        #{protocol,jdbcType=VARCHAR},
+      </if>
+      <if test="exetime != null">
+        #{exetime,jdbcType=INTEGER}
       </if>
     </trim>
   </insert>
@@ -117,17 +138,23 @@
 
   <select id="selectScripts" parameterType="hashMap" resultType="hashMap">
     select
-    <include refid="Base_Column_List" />
+    SCRIPTNAME,SCRIPTDATE,PROTOCOL,REMARK
     from scripts
     <where>
       <if test="SCRIPTDATE!=null">
         SCRIPTDATE = #{SCRIPTDATE,jdbcType=VARCHAR}
       </if>
       <if test="SCRIPTNAME!=null">
-        and DEPT = #{DEPT,jdbcType=VARCHAR}
+        and SCRIPTNAME = #{SCRIPTNAME,jdbcType=VARCHAR}
       </if>
       <if test="SCRIPTTYPE!=null">
         and SCRIPTTYPE = #{SCRIPTTYPE,jdbcType=VARCHAR}
+      </if>
+      <if test="PROTOCOL!=null">
+        and PROTOCOL = #{PROTOCOL,jdbcType=VARCHAR}
+      </if>
+      <if test="STYPE!=null">
+        and STYPE = #{STYPE,jdbcType=VARCHAR}
       </if>
       <if test="USERID!=null">
         and USERID = #{USERID,jdbcType=INTEGER}
@@ -158,5 +185,18 @@
       </if>
     </where>
   </delete>
+
+  <select id="selectPathByName" parameterType="String" resultType="String">
+    select
+    FILEPATH
+    from scripts
+    where SCRIPTNAME = #{scriptname,jdbcType=VARCHAR} limit 1
+  </select>
+
+  <select id="selectScriptTimeByName" parameterType="String" resultType="int">
+    select EXETIME
+    from scripts
+    where SCRIPTNAME = #{scriptname,jdbcType=VARCHAR} limit 1
+  </select>
 
 </mapper>

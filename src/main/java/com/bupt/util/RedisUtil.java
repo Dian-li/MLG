@@ -83,6 +83,13 @@ public class RedisUtil {
         return redisTemplate.opsForHash().size(key);
     }
 
+    public void deleteKey(String key){
+        if(this.redisTemplate.hasKey(key)){
+            this.redisTemplate.delete(key);
+        }
+
+    }
+
 
 
     /**

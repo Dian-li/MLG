@@ -10,13 +10,14 @@
     <result column="SCRIPTPATH" jdbcType="VARCHAR" property="scriptpath" />
     <result column="PARAMFILENAME" jdbcType="VARCHAR" property="paramfilename" />
     <result column="PARAMFILEPATH" jdbcType="VARCHAR" property="paramfilepath" />
-    <result column="IP" jdbcType="VARCHAR" property="ip" />
-    <result column="PORT" jdbcType="VARCHAR" property="port" />
     <result column="PROTOCOL" jdbcType="VARCHAR" property="protocol" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="STATDATAPATH" jdbcType="VARCHAR" property="statdatapath" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="TESTENVPATH" jdbcType="VARCHAR" property="testenvpath" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, NAME, DATE, REMARK, USERID, SCRIPTNAME, SCRIPTPATH, PARAMFILENAME, PARAMFILEPATH, 
-    IP, PORT, PROTOCOL
+    NAME, DATE, REMARK,PROTOCOL, SCRIPTNAME, PARAMFILENAME
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -31,12 +32,11 @@
   <insert id="insert" parameterType="com.bupt.pojo.Testcase">
     insert into testcase (ID, NAME, DATE, 
       REMARK, USERID, SCRIPTNAME, 
-      SCRIPTPATH, PARAMFILENAME, PARAMFILEPATH, 
-      IP, PORT, PROTOCOL)
+      SCRIPTPATH, PARAMFILENAME, PARAMFILEPATH,  PROTOCOL)
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{date,jdbcType=VARCHAR}, 
       #{remark,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER}, #{scriptname,jdbcType=VARCHAR}, 
       #{scriptpath,jdbcType=VARCHAR}, #{paramfilename,jdbcType=VARCHAR}, #{paramfilepath,jdbcType=VARCHAR}, 
-      #{ip,jdbcType=VARCHAR}, #{port,jdbcType=VARCHAR}, #{protocol,jdbcType=VARCHAR})
+      #{protocol,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.bupt.pojo.Testcase">
     insert into testcase
@@ -68,14 +68,17 @@
       <if test="paramfilepath != null">
         PARAMFILEPATH,
       </if>
-      <if test="ip != null">
-        IP,
-      </if>
-      <if test="port != null">
-        PORT,
+      <if test="status!=null">
+        STATUS,
       </if>
       <if test="protocol != null">
         PROTOCOL,
+      </if>
+      <if test="statdatapath!=null">
+        STATDATAPATH,
+      </if>
+      <if test="testenvpath!=null">
+        TESTENVPATH
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -106,14 +109,17 @@
       <if test="paramfilepath != null">
         #{paramfilepath,jdbcType=VARCHAR},
       </if>
-      <if test="ip != null">
-        #{ip,jdbcType=VARCHAR},
-      </if>
-      <if test="port != null">
-        #{port,jdbcType=VARCHAR},
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
       </if>
       <if test="protocol != null">
         #{protocol,jdbcType=VARCHAR},
+      </if>
+      <if test="statdatapath!=null">
+        #{statdatapath,jdbcType=VARCHAR},
+      </if>
+      <if test="testenvpath!=null">
+        #{testenvpath,jdbcType=VARCHAR}
       </if>
     </trim>
   </insert>
@@ -183,11 +189,14 @@
       <if test="date != null">
         and DATE = #{DATE,jdbcType=VARCHAR}
       </if>
-      <if test="scriptname != null">
+      <if test=" SCRIPTNAME!= null">
         and SCRIPTNAME = #{SCRIPTNAME,jdbcType=VARCHAR}
       </if>
-      <if test="paramfilename != null">
+      <if test="PARAMFILENAME!= null">
         and PARAMFILENAME = #{PARAMFILENAME,jdbcType=VARCHAR}
+      </if>
+      <if test="STATUS!=null">
+        and STATUS = #{STATUS,jdbcType=VARCHAR}
       </if>
     </where>
     <trim prefix="limit">
@@ -197,8 +206,29 @@
     </trim>
   </select>
 
+  <update id="updateTestcaseStatus">
+    update testcase
+    set STATUS = #{STATUS,jdbcType=VARCHAR}
+    where NAME = #{NAME,jdbcType=VARCHAR}
+  </update>
+
   <delete id="deleteByNAME" parameterType="String">
     delete from testcase
     where NAME = #{NAME,jdbcType=VARCHAR}
   </delete>
+
+  <select id="selectTestcaseByName" parameterType="String" resultType="com.bupt.pojo.Testcase">
+    select *
+    from testcase
+    where NAME = #{name,jdbcType=VARCHAR} limit 1
+  </select>
+
+  <select id="selectStatDataPathByName" parameterType="String" resultType="String">
+    select STATDATAPATH
+    from testcase
+    where NAME = #{name,jdbcType=VARCHAR} limit 1
+  </select>
+
+
+
 </mapper>

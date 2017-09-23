@@ -7,9 +7,11 @@
     <result column="DATE" jdbcType="VARCHAR" property="date" />
     <result column="USERID" jdbcType="INTEGER" property="userid" />
     <result column="FILEPATH" jdbcType="VARCHAR" property="filepath" />
+    <result column="PROTOCOL" jdbcType="VARCHAR" property="protocol"/>
+    <result column="REMARK" jdbcType="VARCHAR" property="remark"/>
   </resultMap>
   <sql id="Base_Column_List">
-    FILENAME, DATE,FILEPATH
+    FILENAME, DATE,PROTOCOL,REMARK
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -45,6 +47,12 @@
       <if test="filepath != null">
         FILEPATH,
       </if>
+      <if test="protocol != null">
+        PROTOCOL,
+      </if>
+      <if test="remark!=null">
+        REMARK
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -61,6 +69,12 @@
       </if>
       <if test="filepath != null">
         #{filepath,jdbcType=VARCHAR},
+      </if>
+      <if test="protocol!=null">
+        #{protocol,jdbcType=VARCHAR},
+      </if>
+      <if test="remark!=null">
+        #{remark,jdbcType=VARCHAR}
       </if>
     </trim>
   </insert>
@@ -93,20 +107,26 @@
 
   <select id="selectParamFile" parameterType="hashMap" resultType="hashMap">
     select
-    <include refid="Base_Column_List" />
+    FILENAME,DATE,PROTOCOL,REMARK
     from paramsfile
     <where>
-      <if test="filename != null">
+      <if test="FILENAME != null">
         FILENAME = #{FILENAME,jdbcType=VARCHAR}
       </if>
-      <if test="date != null">
+      <if test="DATE != null">
         and DATE = #{DATE,jdbcType=VARCHAR}
       </if>
-      <if test="userid != null">
+      <if test="USERID!= null">
         and USERID = #{USERID,jdbcType=INTEGER}
       </if>
-      <if test="filepath != null">
+      <if test="FILEPATH != null">
         and FILEPATH = #{FILEPATH,jdbcType=VARCHAR}
+      </if>
+      <if test="PROTOCOL !=null">
+        and PROTOCOL = #{PROTOCOL,jdbcType=VARCHAR}
+      </if>
+      <if test="REMARK!=null">
+        and REMARK = #{REMARK,jdbcType=VARCHAR}
       </if>
     </where>
     <trim prefix="limit">
@@ -133,4 +153,10 @@
       </if>
     </where>
   </delete>
+
+  <select id="selectPathByName" parameterType="String" resultType="String">
+    select FILEPATH
+    from paramsfile
+    where FILENAME = #{filename,jdbcType=VARCHAR} limit 1
+  </select>
 </mapper>

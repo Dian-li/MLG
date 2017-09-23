@@ -22,11 +22,15 @@ public class Testcase {
 
     private String paramfilepath;
 
-    private String ip;
+    private String address;
 
-    private String port;
+    private String status;//状态
 
-    private String protocol;
+    private String testenvpath;
+
+    private String statdatapath;
+
+    private String protocol;//协议
 
     public Integer getId() {
         return id;
@@ -100,21 +104,7 @@ public class Testcase {
         this.paramfilepath = paramfilepath == null ? null : paramfilepath.trim();
     }
 
-    public String getIp() {
-        return ip;
-    }
 
-    public void setIp(String ip) {
-        this.ip = ip == null ? null : ip.trim();
-    }
-
-    public String getPort() {
-        return port;
-    }
-
-    public void setPort(String port) {
-        this.port = port == null ? null : port.trim();
-    }
 
     public String getProtocol() {
         return protocol;
@@ -122,5 +112,37 @@ public class Testcase {
 
     public void setProtocol(String protocol) {
         this.protocol = protocol == null ? null : protocol.trim();
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getTestenvpath() {
+        return testenvpath;
+    }
+
+    public void setTestenvpath(String testenvpath) {
+        this.testenvpath = testenvpath;
+    }
+
+    public String getStatdatapath() {
+        return statdatapath;
+    }
+
+    public void setStatdatapath(String statdatapath) {
+        this.statdatapath = statdatapath;
     }
 }

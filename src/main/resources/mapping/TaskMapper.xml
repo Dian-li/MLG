@@ -3,12 +3,14 @@
 <mapper namespace="com.bupt.dao.TaskMapper">
   <resultMap id="BaseResultMap" type="com.bupt.pojo.Task">
     <id column="ID" jdbcType="INTEGER" property="id" />
-    <result column="testcaseid" jdbcType="INTEGER" property="testcaseid" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
-    <result column="configurepath" jdbcType="VARCHAR" property="configurepath" />
+    <result column="TESTCASENAME" jdbcType="VARCHAR" property="testcasename" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="CONFIGUREPATH" jdbcType="VARCHAR" property="configurepath" />
+    <result column="BEGINTIME" jdbcType="VARCHAR" property="begintime" />
+    <result column="USERID" jdbcType="INTEGER" property="userid" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, testcaseid, status, configurepath
+    TESTCASENAME, STATUS, CONFIGUREPATH, BEGINTIME
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -21,10 +23,12 @@
     where ID = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.bupt.pojo.Task">
-    insert into task (ID, testcaseid, status, 
-      configurepath)
-    values (#{id,jdbcType=INTEGER}, #{testcaseid,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, 
-      #{configurepath,jdbcType=VARCHAR})
+    insert into task (ID, TESTCASENAME, STATUS, 
+      CONFIGUREPATH, BEGINTIME, USERID
+      )
+    values (#{id,jdbcType=INTEGER}, #{testcasename,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, 
+      #{configurepath,jdbcType=VARCHAR}, #{begintime,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bupt.pojo.Task">
     insert into task
@@ -32,22 +36,28 @@
       <if test="id != null">
         ID,
       </if>
-      <if test="testcaseid != null">
-        testcaseid,
+      <if test="testcasename != null">
+        TESTCASENAME,
       </if>
       <if test="status != null">
-        status,
+        STATUS,
       </if>
       <if test="configurepath != null">
-        configurepath,
+        CONFIGUREPATH,
+      </if>
+      <if test="begintime != null">
+        BEGINTIME,
+      </if>
+      <if test="userid != null">
+        USERID,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="testcaseid != null">
-        #{testcaseid,jdbcType=INTEGER},
+      <if test="testcasename != null">
+        #{testcasename,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
         #{status,jdbcType=VARCHAR},
@@ -55,28 +65,56 @@
       <if test="configurepath != null">
         #{configurepath,jdbcType=VARCHAR},
       </if>
+      <if test="begintime != null">
+        #{begintime,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bupt.pojo.Task">
     update task
     <set>
-      <if test="testcaseid != null">
-        testcaseid = #{testcaseid,jdbcType=INTEGER},
+      <if test="testcasename != null">
+        TESTCASENAME = #{testcasename,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        status = #{status,jdbcType=VARCHAR},
+        STATUS = #{status,jdbcType=VARCHAR},
       </if>
       <if test="configurepath != null">
-        configurepath = #{configurepath,jdbcType=VARCHAR},
+        CONFIGUREPATH = #{configurepath,jdbcType=VARCHAR},
+      </if>
+      <if test="begintime != null">
+        BEGINTIME = #{begintime,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        USERID = #{userid,jdbcType=INTEGER},
       </if>
     </set>
     where ID = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.bupt.pojo.Task">
     update task
-    set testcaseid = #{testcaseid,jdbcType=INTEGER},
-      status = #{status,jdbcType=VARCHAR},
-      configurepath = #{configurepath,jdbcType=VARCHAR}
+    set TESTCASENAME = #{testcasename,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      CONFIGUREPATH = #{configurepath,jdbcType=VARCHAR},
+      BEGINTIME = #{begintime,jdbcType=VARCHAR},
+      USERID = #{userid,jdbcType=INTEGER}
     where ID = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectTasks" parameterType="string" resultType="hashMap">
+    select
+    TESTCASENAME, BEGINTIME
+    from task
+    where STATUS = #{status,jdbcType=VARCHAR}
+  </select>
+
+  <update id="updateByTaskName" parameterType="string">
+    update task
+    set STATUS = #{status,jdbcType=VARCHAR}
+    where TESTCASENAME = #{testcasename,jdbcType=VARCHAR}
+  </update>
+
 </mapper>

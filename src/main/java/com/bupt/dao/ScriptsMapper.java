@@ -21,4 +21,8 @@ public interface ScriptsMapper {
     int deleteByScript(Scripts scripts);
 
     List<Map<String,Object>> selectScripts(Map paramMap);
+
+    String selectPathByName(String scriptname);
+
+    int selectScriptTimeByName(String scriptname);
 }

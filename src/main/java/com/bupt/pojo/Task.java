@@ -3,11 +3,15 @@ package com.bupt.pojo;
 public class Task {
     private Integer id;
 
-    private Integer testcaseid;
+    private String testcasename;
 
     private String status;
 
     private String configurepath;
+
+    private String begintime;
+
+    private Integer userid;
 
     public Integer getId() {
         return id;
@@ -17,12 +21,12 @@ public class Task {
         this.id = id;
     }
 
-    public Integer getTestcaseid() {
-        return testcaseid;
+    public String getTestcasename() {
+        return testcasename;
     }
 
-    public void setTestcaseid(Integer testcaseid) {
-        this.testcaseid = testcaseid;
+    public void setTestcasename(String testcasename) {
+        this.testcasename = testcasename == null ? null : testcasename.trim();
     }
 
     public String getStatus() {
@@ -39,5 +43,21 @@ public class Task {
 
     public void setConfigurepath(String configurepath) {
         this.configurepath = configurepath == null ? null : configurepath.trim();
+    }
+
+    public String getBegintime() {
+        return begintime;
+    }
+
+    public void setBegintime(String begintime) {
+        this.begintime = begintime == null ? null : begintime.trim();
+    }
+
+    public Integer getUserid() {
+        return userid;
+    }
+
+    public void setUserid(Integer userid) {
+        this.userid = userid;
     }
 }

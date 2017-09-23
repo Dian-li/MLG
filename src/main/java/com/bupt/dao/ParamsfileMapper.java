@@ -22,4 +22,6 @@ public interface ParamsfileMapper {
     List<Map<String,Object>> selectParamFile(Map paramMap);
 
     int deleteByParamFile(Paramsfile paramsfile);
+
+    String selectPathByName(String filename);
 }
