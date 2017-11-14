@@ -10,7 +10,7 @@ public class MapUtil {
     public static Map<String,Object> ConvertMap(Map<String,String[]> map, Set<String> set){
         Map<String,Object> resultMap = new HashMap<String,Object>();
         for (String str : set) {
-            if(map.containsKey(str)){
+            if(map.containsKey(str) && map.get(str)[0]!=null && map.get(str)[0].length()>0){
                 resultMap.put(str,map.get(str)[0]);
             }else{
                 resultMap.put(str,null);
