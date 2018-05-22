@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.dao.ParamsfileMapper">
+  <resultMap id="BaseResultMap" type="com.bupt.pojo.Paramsfile">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="FILENAME" jdbcType="VARCHAR" property="filename" />
+    <result column="DATE" jdbcType="VARCHAR" property="date" />
+    <result column="USERID" jdbcType="INTEGER" property="userid" />
+    <result column="FILEPATH" jdbcType="VARCHAR" property="filepath" />
+    <result column="PROTOCOL" jdbcType="VARCHAR" property="protocol"/>
+    <result column="REMARK" jdbcType="VARCHAR" property="remark"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    FILENAME, DATE,PROTOCOL,REMARK
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from paramsfile
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from paramsfile
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bupt.pojo.Paramsfile">
+    insert into paramsfile (ID, FILENAME, DATE, 
+      USERID, FILEPATH)
+    values (#{id,jdbcType=INTEGER}, #{filename,jdbcType=VARCHAR}, #{date,jdbcType=VARCHAR}, 
+      #{userid,jdbcType=INTEGER}, #{filepath,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bupt.pojo.Paramsfile">
+    insert into paramsfile
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="filename != null">
+        FILENAME,
+      </if>
+      <if test="date != null">
+        DATE,
+      </if>
+      <if test="userid != null">
+        USERID,
+      </if>
+      <if test="filepath != null">
+        FILEPATH,
+      </if>
+      <if test="protocol != null">
+        PROTOCOL,
+      </if>
+      <if test="remark!=null">
+        REMARK
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="filename != null">
+        #{filename,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="filepath != null">
+        #{filepath,jdbcType=VARCHAR},
+      </if>
+      <if test="protocol!=null">
+        #{protocol,jdbcType=VARCHAR},
+      </if>
+      <if test="remark!=null">
+        #{remark,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bupt.pojo.Paramsfile">
+    update paramsfile
+    <set>
+      <if test="filename != null">
+        FILENAME = #{filename,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        DATE = #{date,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        USERID = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="filepath != null">
+        FILEPATH = #{filepath,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bupt.pojo.Paramsfile">
+    update paramsfile
+    set FILENAME = #{filename,jdbcType=VARCHAR},
+      DATE = #{date,jdbcType=VARCHAR},
+      USERID = #{userid,jdbcType=INTEGER},
+      FILEPATH = #{filepath,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectParamFile" parameterType="hashMap" resultType="hashMap">
+    select
+    FILENAME,DATE,PROTOCOL,REMARK
+    from paramsfile
+    <where>
+      <if test="FILENAME != null">
+        FILENAME = #{FILENAME,jdbcType=VARCHAR}
+      </if>
+      <if test="DATE != null">
+        and DATE = #{DATE,jdbcType=VARCHAR}
+      </if>
+      <if test="USERID!= null">
+        and USERID = #{USERID,jdbcType=INTEGER}
+      </if>
+      <if test="FILEPATH != null">
+        and FILEPATH = #{FILEPATH,jdbcType=VARCHAR}
+      </if>
+      <if test="PROTOCOL !=null">
+        and PROTOCOL = #{PROTOCOL,jdbcType=VARCHAR}
+      </if>
+      <if test="REMARK!=null">
+        and REMARK = #{REMARK,jdbcType=VARCHAR}
+      </if>
+    </where>
+    <trim prefix="limit">
+      <if test="S_INDEX!=null and MAX_NUM!=null">
+        #{S_INDEX,jdbcType=INTEGER},#{MAX_NUM,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </select>
+
+  <delete id="deleteByParamFile" parameterType="com.bupt.pojo.Scripts">
+    DELETE from paramsfile
+    <where>
+      <if test="filename != null">
+        FILENAME = #{filename,jdbcType=VARCHAR}
+      </if>
+      <if test="date != null">
+        and DATE = #{date,jdbcType=VARCHAR}
+      </if>
+      <if test="userid != null">
+        and USERID = #{userid,jdbcType=INTEGER}
+      </if>
+      <if test="filepath != null">
+        and FILEPATH = #{filepath,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </delete>
+
+  <select id="selectPathByName" parameterType="String" resultType="String">
+    select FILEPATH
+    from paramsfile
+    where FILENAME = #{filename,jdbcType=VARCHAR} limit 1
+  </select>
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <send protocol="RMDB">
+    <wait>100</wait>
+    <db_type>postgresql</db_type>
+    <host>127.0.0.1</host>
+    <port>5432</port>
+    <username>postgres</username>
+    <password>123</password>
+    <db_name>exampledb</db_name>
+    <sql>select * from student</sql>
+  </send>
+  <send protocol="RMDB">
+    <wait>100</wait>
+    <db_type>mysql</db_type>
+	<host>127.0.0.1</host>
+	<port>3306</port>
+	<username>root</username>
+	<password>123</password>
+	<db_name>student</db_name>
+	<sql>select name from student where score=101</sql>
+  </send>
+  <send protocol="RMDB">
+    <wait>100</wait>
+    <db_type>mysql</db_type>
+	<host>127.0.0.1</host>
+	<port>3306</port>
+	<username>root</username>
+	<password>123</password>
+	<db_name>student</db_name>
+	<sql>update student set score=123 where id=2</sql>
+  </send>
+  <send protocol="RMDB">
+    <wait>100</wait>
+    <db_type>mysql</db_type>
+	<host>127.0.0.1</host>
+	<port>3306</port>
+	<username>root</username>
+	<password>123</password>
+	<db_name>student</db_name>
+	<sql>insert into student (name, score) values ('lxc',110)</sql>
+  </send>
+</root>
+

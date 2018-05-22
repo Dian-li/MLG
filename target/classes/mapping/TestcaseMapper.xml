@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.dao.TestcaseMapper">
+  <resultMap id="BaseResultMap" type="com.bupt.pojo.Testcase">
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="DATE" jdbcType="VARCHAR" property="date" />
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+    <result column="USERID" jdbcType="INTEGER" property="userid" />
+    <result column="SCRIPTNAME" jdbcType="VARCHAR" property="scriptname" />
+    <result column="SCRIPTPATH" jdbcType="VARCHAR" property="scriptpath" />
+    <result column="PARAMFILENAME" jdbcType="VARCHAR" property="paramfilename" />
+    <result column="PARAMFILEPATH" jdbcType="VARCHAR" property="paramfilepath" />
+    <result column="PROTOCOL" jdbcType="VARCHAR" property="protocol" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="STATDATAPATH" jdbcType="VARCHAR" property="statdatapath" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="TESTENVPATH" jdbcType="VARCHAR" property="testenvpath" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    NAME, DATE, REMARK,PROTOCOL, SCRIPTNAME, PARAMFILENAME
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from testcase
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from testcase
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bupt.pojo.Testcase">
+    insert into testcase (ID, NAME, DATE, 
+      REMARK, USERID, SCRIPTNAME, 
+      SCRIPTPATH, PARAMFILENAME, PARAMFILEPATH,  PROTOCOL)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{date,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER}, #{scriptname,jdbcType=VARCHAR}, 
+      #{scriptpath,jdbcType=VARCHAR}, #{paramfilename,jdbcType=VARCHAR}, #{paramfilepath,jdbcType=VARCHAR}, 
+      #{protocol,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bupt.pojo.Testcase">
+    insert into testcase
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="name != null">
+        NAME,
+      </if>
+      <if test="date != null">
+        DATE,
+      </if>
+      <if test="remark != null">
+        REMARK,
+      </if>
+      <if test="userid != null">
+        USERID,
+      </if>
+      <if test="scriptname != null">
+        SCRIPTNAME,
+      </if>
+      <if test="scriptpath != null">
+        SCRIPTPATH,
+      </if>
+      <if test="paramfilename != null">
+        PARAMFILENAME,
+      </if>
+      <if test="paramfilepath != null">
+        PARAMFILEPATH,
+      </if>
+      <if test="status!=null">
+        STATUS,
+      </if>
+      <if test="protocol != null">
+        PROTOCOL,
+      </if>
+      <if test="statdatapath!=null">
+        STATDATAPATH,
+      </if>
+      <if test="testenvpath!=null">
+        TESTENVPATH
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="scriptname != null">
+        #{scriptname,jdbcType=VARCHAR},
+      </if>
+      <if test="scriptpath != null">
+        #{scriptpath,jdbcType=VARCHAR},
+      </if>
+      <if test="paramfilename != null">
+        #{paramfilename,jdbcType=VARCHAR},
+      </if>
+      <if test="paramfilepath != null">
+        #{paramfilepath,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="protocol != null">
+        #{protocol,jdbcType=VARCHAR},
+      </if>
+      <if test="statdatapath!=null">
+        #{statdatapath,jdbcType=VARCHAR},
+      </if>
+      <if test="testenvpath!=null">
+        #{testenvpath,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bupt.pojo.Testcase">
+    update testcase
+    <set>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        DATE = #{date,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        USERID = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="scriptname != null">
+        SCRIPTNAME = #{scriptname,jdbcType=VARCHAR},
+      </if>
+      <if test="scriptpath != null">
+        SCRIPTPATH = #{scriptpath,jdbcType=VARCHAR},
+      </if>
+      <if test="paramfilename != null">
+        PARAMFILENAME = #{paramfilename,jdbcType=VARCHAR},
+      </if>
+      <if test="paramfilepath != null">
+        PARAMFILEPATH = #{paramfilepath,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        IP = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="port != null">
+        PORT = #{port,jdbcType=VARCHAR},
+      </if>
+      <if test="protocol != null">
+        PROTOCOL = #{protocol,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bupt.pojo.Testcase">
+    update testcase
+    set NAME = #{name,jdbcType=VARCHAR},
+      DATE = #{date,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      USERID = #{userid,jdbcType=INTEGER},
+      SCRIPTNAME = #{scriptname,jdbcType=VARCHAR},
+      SCRIPTPATH = #{scriptpath,jdbcType=VARCHAR},
+      PARAMFILENAME = #{paramfilename,jdbcType=VARCHAR},
+      PARAMFILEPATH = #{paramfilepath,jdbcType=VARCHAR},
+      IP = #{ip,jdbcType=VARCHAR},
+      PORT = #{port,jdbcType=VARCHAR},
+      PROTOCOL = #{protocol,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectTestcase" parameterType="com.bupt.pojo.Testcase" resultType="hashMap">
+    select
+    <include refid="Base_Column_List" />
+    from testcase
+    <where>
+      <if test="NAME != null">
+        NAME = #{NAME,jdbcType=VARCHAR}
+      </if>
+      <if test="date != null">
+        and DATE = #{DATE,jdbcType=VARCHAR}
+      </if>
+      <if test=" SCRIPTNAME!= null">
+        and SCRIPTNAME = #{SCRIPTNAME,jdbcType=VARCHAR}
+      </if>
+      <if test="PARAMFILENAME!= null">
+        and PARAMFILENAME = #{PARAMFILENAME,jdbcType=VARCHAR}
+      </if>
+      <if test="STATUS!=null">
+        and STATUS = #{STATUS,jdbcType=VARCHAR}
+      </if>
+    </where>
+    <trim prefix="limit">
+      <if test="S_INDEX!=null and MAX_NUM!=null">
+        #{S_INDEX,jdbcType=INTEGER},#{MAX_NUM,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </select>
+
+  <update id="updateTestcaseStatus">
+    update testcase
+    set STATUS = #{STATUS,jdbcType=VARCHAR}
+    where NAME = #{NAME,jdbcType=VARCHAR}
+  </update>
+
+  <delete id="deleteByNAME" parameterType="String">
+    delete from testcase
+    where NAME = #{NAME,jdbcType=VARCHAR}
+  </delete>
+
+  <select id="selectTestcaseByName" parameterType="String" resultType="com.bupt.pojo.Testcase">
+    select *
+    from testcase
+    where NAME = #{name,jdbcType=VARCHAR} limit 1
+  </select>
+
+  <select id="selectStatDataPathByName" parameterType="String" resultType="String">
+    select STATDATAPATH
+    from testcase
+    where NAME = #{name,jdbcType=VARCHAR} limit 1
+  </select>
+
+
+
+</mapper>

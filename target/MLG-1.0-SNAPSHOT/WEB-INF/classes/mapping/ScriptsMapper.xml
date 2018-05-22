@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.dao.ScriptsMapper">
+  <resultMap id="BaseResultMap" type="com.bupt.pojo.Scripts">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="SCRIPTNAME" jdbcType="VARCHAR" property="scriptname" />
+    <result column="SCRIPTDATE" jdbcType="VARCHAR" property="scriptdate" />
+    <result column="SCRIPTTYPE" jdbcType="VARCHAR" property="scripttype" />
+    <result column="FILEPATH" jdbcType="VARCHAR" property="filepath" />
+    <result column="PROTOCOL" jdbcType="VARCHAR" property="protocol"/>
+    <result column="EXETIME" jdbcType="INTEGER" property="exetime"/>
+    <result column="STYPE" jdbcType="VARCHAR" property="stype"/>
+    <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+    <result column="USERID" jdbcType="INTEGER" property="userid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    SCRIPTNAME, SCRIPTDATE, SCRIPTTYPE, FILEPATH, REMARK
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from scripts
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from scripts
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bupt.pojo.Scripts">
+    insert into scripts (ID, SCRIPTNAME, SCRIPTDATE, 
+      SCRIPTTYPE, FILEPATH, REMARK, 
+      USERID)
+    values (#{id,jdbcType=INTEGER}, #{scriptname,jdbcType=VARCHAR}, #{scriptdate,jdbcType=VARCHAR}, 
+      #{scripttype,jdbcType=VARCHAR}, #{filepath,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{userid,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bupt.pojo.Scripts">
+    insert into scripts
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="scriptname != null">
+        SCRIPTNAME,
+      </if>
+      <if test="scriptdate != null">
+        SCRIPTDATE,
+      </if>
+      <if test="scripttype != null">
+        SCRIPTTYPE,
+      </if>
+      <if test="filepath != null">
+        FILEPATH,
+      </if>
+      <if test="remark != null">
+        REMARK,
+      </if>
+      <if test="userid != null">
+        USERID,
+      </if>
+      <if test="stype != null">
+        STYPE,
+      </if>
+      <if test="protocol != null">
+        PROTOCOL,
+      </if>
+      <if test="exetime != null">
+        EXETIME
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="scriptname != null">
+        #{scriptname,jdbcType=VARCHAR},
+      </if>
+      <if test="scriptdate != null">
+        #{scriptdate,jdbcType=VARCHAR},
+      </if>
+      <if test="scripttype != null">
+        #{scripttype,jdbcType=VARCHAR},
+      </if>
+      <if test="filepath != null">
+        #{filepath,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="stype != null">
+        #{stype,jdbcType=VARCHAR},
+      </if>
+      <if test="protocol != null">
+        #{protocol,jdbcType=VARCHAR},
+      </if>
+      <if test="exetime != null">
+        #{exetime,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bupt.pojo.Scripts">
+    update scripts
+    <set>
+      <if test="scriptname != null">
+        SCRIPTNAME = #{scriptname,jdbcType=VARCHAR},
+      </if>
+      <if test="scriptdate != null">
+        SCRIPTDATE = #{scriptdate,jdbcType=VARCHAR},
+      </if>
+      <if test="scripttype != null">
+        SCRIPTTYPE = #{scripttype,jdbcType=VARCHAR},
+      </if>
+      <if test="filepath != null">
+        FILEPATH = #{filepath,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        USERID = #{userid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bupt.pojo.Scripts">
+    update scripts
+    set SCRIPTNAME = #{scriptname,jdbcType=VARCHAR},
+      SCRIPTDATE = #{scriptdate,jdbcType=VARCHAR},
+      SCRIPTTYPE = #{scripttype,jdbcType=VARCHAR},
+      FILEPATH = #{filepath,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      USERID = #{userid,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectScripts" parameterType="hashMap" resultType="hashMap">
+    select
+    SCRIPTNAME,SCRIPTDATE,PROTOCOL,REMARK
+    from scripts
+    <where>
+      <if test="SCRIPTDATE!=null">
+        SCRIPTDATE = #{SCRIPTDATE,jdbcType=VARCHAR}
+      </if>
+      <if test="SCRIPTNAME!=null">
+        and SCRIPTNAME = #{SCRIPTNAME,jdbcType=VARCHAR}
+      </if>
+      <if test="SCRIPTTYPE!=null">
+        and SCRIPTTYPE = #{SCRIPTTYPE,jdbcType=VARCHAR}
+      </if>
+      <if test="PROTOCOL!=null">
+        and PROTOCOL = #{PROTOCOL,jdbcType=VARCHAR}
+      </if>
+      <if test="STYPE!=null">
+        and STYPE = #{STYPE,jdbcType=VARCHAR}
+      </if>
+      <if test="USERID!=null">
+        and USERID = #{USERID,jdbcType=INTEGER}
+      </if>
+
+    </where>
+    <trim prefix="limit">
+      <if test="S_INDEX!=null and MAX_NUM!=null">
+        #{S_INDEX,jdbcType=INTEGER},#{MAX_NUM,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </select>
+
+  <delete id="deleteByScript" parameterType="com.bupt.pojo.Scripts">
+    delete from scripts
+    <where>
+      <if test="scriptname != null">
+        SCRIPTNAME = #{scriptname,jdbcType=VARCHAR}
+      </if>
+      <if test="scriptdate != null">
+        and SCRIPTDATE = #{scriptdate,jdbcType=VARCHAR}
+      </if>
+      <if test="scripttype != null">
+        and SCRIPTTYPE = #{scripttype,jdbcType=VARCHAR}
+      </if>
+      <if test="filepath != null">
+        and FILEPATH = #{filepath,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </delete>
+
+  <select id="selectPathByName" parameterType="String" resultType="String">
+    select
+    FILEPATH
+    from scripts
+    where SCRIPTNAME = #{scriptname,jdbcType=VARCHAR} limit 1
+  </select>
+
+  <select id="selectScriptTimeByName" parameterType="String" resultType="int">
+    select EXETIME
+    from scripts
+    where SCRIPTNAME = #{scriptname,jdbcType=VARCHAR} limit 1
+  </select>
+
+</mapper>

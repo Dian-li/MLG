@@ -1,0 +1,1 @@
+date,time,wlp8s0_recv,wlp8s0_send,enp7s0_recv,enp7s0_send,lo_recv,lo_send,[1m[7m%[27m[1m[0m                                                                                ]2;lxc@lxc_recv,[1m[7m%[27m[1m[0m                                                                                ]2;lxc@lxc_send

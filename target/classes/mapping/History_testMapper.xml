@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bupt.dao.History_testMapper">
+  <resultMap id="BaseResultMap" type="com.bupt.pojo.History_test">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+    <result column="DATE" jdbcType="VARCHAR" property="date" />
+    <result column="SCRIPTID" jdbcType="INTEGER" property="scriptid" />
+    <result column="PARAMFILEID" jdbcType="INTEGER" property="paramfileid" />
+    <result column="TPS" jdbcType="INTEGER" property="tps" />
+    <result column="MAXCOURRENT" jdbcType="INTEGER" property="maxcourrent" />
+    <result column="RESOURCEPATH" jdbcType="VARCHAR" property="resourcepath" />
+    <result column="USERID" jdbcType="INTEGER" property="userid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, NAME, DATE, SCRIPTID, PARAMFILEID, TPS, MAXCOURRENT, RESOURCEPATH, USERID
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from history_test
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from history_test
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.bupt.pojo.History_test">
+    insert into history_test (ID, NAME, DATE, 
+      SCRIPTID, PARAMFILEID, TPS, 
+      MAXCOURRENT, RESOURCEPATH, USERID
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{date,jdbcType=VARCHAR}, 
+      #{scriptid,jdbcType=INTEGER}, #{paramfileid,jdbcType=INTEGER}, #{tps,jdbcType=INTEGER}, 
+      #{maxcourrent,jdbcType=INTEGER}, #{resourcepath,jdbcType=VARCHAR}, #{userid,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bupt.pojo.History_test">
+    insert into history_test
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="name != null">
+        NAME,
+      </if>
+      <if test="date != null">
+        DATE,
+      </if>
+      <if test="scriptid != null">
+        SCRIPTID,
+      </if>
+      <if test="paramfileid != null">
+        PARAMFILEID,
+      </if>
+      <if test="tps != null">
+        TPS,
+      </if>
+      <if test="maxcourrent != null">
+        MAXCOURRENT,
+      </if>
+      <if test="resourcepath != null">
+        RESOURCEPATH,
+      </if>
+      <if test="userid != null">
+        USERID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=VARCHAR},
+      </if>
+      <if test="scriptid != null">
+        #{scriptid,jdbcType=INTEGER},
+      </if>
+      <if test="paramfileid != null">
+        #{paramfileid,jdbcType=INTEGER},
+      </if>
+      <if test="tps != null">
+        #{tps,jdbcType=INTEGER},
+      </if>
+      <if test="maxcourrent != null">
+        #{maxcourrent,jdbcType=INTEGER},
+      </if>
+      <if test="resourcepath != null">
+        #{resourcepath,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bupt.pojo.History_test">
+    update history_test
+    <set>
+      <if test="name != null">
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        DATE = #{date,jdbcType=VARCHAR},
+      </if>
+      <if test="scriptid != null">
+        SCRIPTID = #{scriptid,jdbcType=INTEGER},
+      </if>
+      <if test="paramfileid != null">
+        PARAMFILEID = #{paramfileid,jdbcType=INTEGER},
+      </if>
+      <if test="tps != null">
+        TPS = #{tps,jdbcType=INTEGER},
+      </if>
+      <if test="maxcourrent != null">
+        MAXCOURRENT = #{maxcourrent,jdbcType=INTEGER},
+      </if>
+      <if test="resourcepath != null">
+        RESOURCEPATH = #{resourcepath,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        USERID = #{userid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bupt.pojo.History_test">
+    update history_test
+    set NAME = #{name,jdbcType=VARCHAR},
+      DATE = #{date,jdbcType=VARCHAR},
+      SCRIPTID = #{scriptid,jdbcType=INTEGER},
+      PARAMFILEID = #{paramfileid,jdbcType=INTEGER},
+      TPS = #{tps,jdbcType=INTEGER},
+      MAXCOURRENT = #{maxcourrent,jdbcType=INTEGER},
+      RESOURCEPATH = #{resourcepath,jdbcType=VARCHAR},
+      USERID = #{userid,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
