@@ -218,6 +218,9 @@ public class FileUtil {
             throws IOException {
         File source = new File(sourcefile);
         File dest = new File(destfile);
+        if(!source.exists()){
+            return;
+        }
         if(!dest.exists()){
             dest.createNewFile();
         }
@@ -237,56 +240,7 @@ public class FileUtil {
         }
     }
 
-    /**
-     * 获取文件总行数
-     * @param file
-     * @return
-     * @throws IOException
-     */
-    public static long getTotalLines(File file) throws IOException {
-        FileReader in = new FileReader(file);
-        LineNumberReader reader = new LineNumberReader(in);
-        String s = reader.readLine();
-        long lines = 0L;
-        while (s != null) {
-            lines++;
-            s = reader.readLine();
-        }
-        reader.close();
-        in.close();
-        return lines;
-    }
 
-    // 读取文件指定行。
-    public static List<String> readAppointedLineNumber(File sourceFile, int lineNumber,int offset)
-            throws IOException {
-        List<String> result = new ArrayList<String>();
-        FileReader in = new FileReader(sourceFile);
-        LineNumberReader reader = new LineNumberReader(in);
-        String s = "";
-        if (lineNumber <= 0 || lineNumber > getTotalLines(sourceFile)) {
-            System.out.println("不在文件的行数范围(1至总行数)之内。");
-            System.exit(0);
-        }
-        int lines = 0;
-        while (s != null && offset!=0) {
-            if((lines - lineNumber) < 0){
-                lines++;
-                s = reader.readLine();
-                continue;
-            }
-            //找到该行
-            //System.out.println(s);
-            result.add(s);
-            offset--;
-            lines++;
-            s = reader.readLine();
-
-        }
-        reader.close();
-        in.close();
-        return result;
-    }
     //inputStream to String
     public static String inputStreamToString(InputStream inputStream)throws IOException{
         StringBuffer out = new StringBuffer();
@@ -296,5 +250,23 @@ public class FileUtil {
         }
         //System.out.println(out.toString());
         return out.toString();
+    }
+
+    public static String getFileContext(String scriptPath) throws Exception {
+        File file = new File(scriptPath);
+        if (file.isFile() && file.exists()) { //判断文件是否存在
+            InputStreamReader read = new InputStreamReader(
+                    new FileInputStream(file));//考虑到编码格式
+            BufferedReader bufferedReader = new BufferedReader(read);
+            StringBuilder stringBuilder = new StringBuilder();
+            String lineTxt = null;
+            while ((lineTxt = bufferedReader.readLine()) != null) {
+                stringBuilder.append(lineTxt+"\n");
+            }
+            read.close();
+            return stringBuilder.toString();
+        } else {
+            return "";
+        }
     }
 }

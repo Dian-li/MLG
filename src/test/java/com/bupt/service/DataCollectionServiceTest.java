@@ -20,7 +20,7 @@ public class DataCollectionServiceTest {
     @Test
     public void start() {
         try{
-            this.dataCollectionService.startCollect("dian","test");
+            //this.dataCollectionService.startCollect("dian","test");
         }catch (Exception e){
             System.out.println(e.getMessage());
             e.printStackTrace();

@@ -1,10 +1,16 @@
 package com.bupt.service;
 
+import com.bupt.client.Httpclient;
 import com.bupt.dao.Exe_moduleMapper;
 import com.bupt.dao.ModulesMapper;
 import com.bupt.pojo.Exe_module;
 import com.bupt.pojo.Modules;
+import com.bupt.pojo.Result;
+import com.bupt.util.FileUtil;
 import com.bupt.util.MapUtil;
+import org.apache.http.HttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +21,13 @@ import java.util.Set;
 
 @Service
 public class ModuleService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModuleService.class);
+
     @Autowired
     private ModulesMapper modulesMapper;
+    @Autowired
+    private Httpclient httpclient;
 
     public void addModule(String address,int parallel){
 
@@ -43,5 +54,21 @@ public class ModuleService {
 
     public int deleteModule(String address){
         return this.modulesMapper.deleteByAddress(address);
+    }
+
+    public Result testModule(String host){
+        Result result = new Result();
+        try{
+            HttpResponse response = httpclient.postParam(host,null);
+            result.setErrCode(String.valueOf(response.getStatusLine().getStatusCode()));
+            result.setErrText(FileUtil.inputStreamToString(response.getEntity().getContent()));
+            result.setIndex("0");
+        }catch (Exception e){
+            result.setErrCode("404");
+            result.setIndex("-1");
+            result.setErrText("post request fail:"+e.getMessage());
+            LOGGER.error("post request fail:{}",e.getMessage());
+        }
+        return result;
     }
 }

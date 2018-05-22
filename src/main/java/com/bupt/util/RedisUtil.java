@@ -109,8 +109,12 @@ public class RedisUtil {
         redisTemplate.setHashKeySerializer(stringSerializer);
         redisTemplate.setHashValueSerializer(stringSerializer);
         this.redisTemplate = redisTemplate;
-        this.redisTemplate = redisTemplate;
+        //this.redisTemplate = redisTemplate;
 
+    }
+    //字符型
+    public String getStringKey(String key){
+        return redisTemplate.opsForValue().get(key);
     }
 
 }

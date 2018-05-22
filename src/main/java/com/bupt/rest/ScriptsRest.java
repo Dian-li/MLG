@@ -29,7 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Dian on 2017/8/7.
+ * @author dian
+ * @version 1.1
  */
 @Component
 @Path("/scriptsMana")
@@ -52,11 +53,8 @@ public class ScriptsRest {
     public Response upload(@FormDataParam("file") InputStream fileInputStream,
                            @FormDataParam("file") FormDataContentDisposition contentDispositionHeader,@FormDataParam("SCRIPTPROTOCOL")InputStream scriptProtocol,@FormDataParam("EXETIME")InputStream exeTime,@FormDataParam("REMARK")InputStream remark)throws IOException{
         //System.out.println(scriptProtocol.getName()+scriptProtocol.getFileName());
-
-
         String fileName = contentDispositionHeader.getFileName();
         String t=contentDispositionHeader.getName();
-        //httpServletRequest.g
         System.out.println(fileName+" "+t);
 
         File file = new File(Address.getUserNotModulesScripts("dian")+"/" + fileName);
@@ -100,7 +98,6 @@ public class ScriptsRest {
             result = this.resultService.Error(String.valueOf(e.hashCode()),e.getMessage());
         }
         return ResponseUtil.SupportCORS(result);
-        //return ResponseUtil.SupportCORS(scripts);
     }
 
     /**
@@ -118,7 +115,6 @@ public class ScriptsRest {
     @Produces("application/json")
     @Consumes({MediaType.MULTIPART_FORM_DATA,
             MediaType.APPLICATION_JSON })
-    //@Consumes("application/octet-stream")
     public Response uploadModules(@FormDataParam("file") InputStream fileInputStream,
                            @FormDataParam("file") FormDataContentDisposition contentDispositionHeader,@FormDataParam("SCRIPTPROTOCOL")InputStream scriptProtocol,@FormDataParam("SCRIPTTYPE")InputStream scriptType,@FormDataParam("REMARK")InputStream remark)throws IOException{
         String fileName = contentDispositionHeader.getFileName();
@@ -238,7 +234,6 @@ public class ScriptsRest {
         String path = this.scriptsService.selectPathByName(scriptname);
         Result result = this.scriptsService.handleScript(scriptname,path,"dian");
         return ResponseUtil.SupportCORS(result);
-
     }
 
     @POST

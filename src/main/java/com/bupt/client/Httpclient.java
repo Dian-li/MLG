@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 @Component
-public class httpclient {
+public class Httpclient {
 
     public void post(String url, String filepath, Map<String,String> params)throws Exception {
         HttpClient httpclient = HttpClients.createDefault();
@@ -65,7 +65,7 @@ public class httpclient {
         }
     }
 
-    public int postParam(String url, Map<String,String> params)throws Exception {
+    public HttpResponse postParam(String url, Map<String,String> params)throws Exception {
         HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
         //HttpHost proxy = new HttpHost("127.0.0.1",8888,null);
         //httpClientBuilder.setProxy(proxy);
@@ -87,15 +87,34 @@ public class httpclient {
             entityBuilder.setContentEncoding("UTF-8");
             httpPost.setEntity(entityBuilder.build());
         }
-        HttpResponse httpResponse = httpclient.execute(httpPost);
+        return httpclient.execute(httpPost);
+    }
 
-        int statusCode = httpResponse.getStatusLine().getStatusCode();
-        if(statusCode== HttpStatus.SC_OK){
-            HttpEntity response =  httpResponse.getEntity();
-            String result = EntityUtils.toString(response,"UTF-8");
-            System.out.println(result);
+    public HttpResponse postRequest(String url,String filename, Map<String,Object> params)throws Exception {
+        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+        //HttpHost proxy = new HttpHost("127.0.0.1",8888,null);
+        //httpClientBuilder.setProxy(proxy);
+        //httpClientBuilder.setUserAgent("Mozilla/5.0 (X11; U; Linux i686; en; rv:1.9.1.2) Gecko/20090803 Fedora/3.5");
+        HttpClient httpclient = httpClientBuilder.build();
+        url = addProtocolForURL(url);
+        HttpPost httpPost = new HttpPost(url);
+
+        List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+        if(params!=null && params.size()!=0){
+            JSONObject jsonObject = new JSONObject();
+            for(Map.Entry<String,Object> param:params.entrySet()){
+                jsonObject.put(param.getKey(),param.getValue());
+            }
+            String fileContext = FileUtil.getFileContext(filename);
+            jsonObject.put("file",fileContext);
+
+            EntityBuilder entityBuilder = EntityBuilder.create();
+            entityBuilder.setText(JSONObject.toJSONString(jsonObject));
+            entityBuilder.setContentType(ContentType.APPLICATION_JSON);
+            entityBuilder.setContentEncoding("UTF-8");
+            httpPost.setEntity(entityBuilder.build());
         }
-        return statusCode;
+        return httpclient.execute(httpPost);
     }
 
     public int getParam(String url, Map<String,String> params)throws Exception {

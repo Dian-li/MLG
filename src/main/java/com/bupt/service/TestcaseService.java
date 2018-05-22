@@ -29,6 +29,7 @@ public class TestcaseService {
         Set set = new HashSet();
         set.add("NAME");
         set.add("DATE");
+        set.add("STATUS");
         set.add("SCRIPTNAME");
         set.add("PARAMFILENAME");
         set.add("S_INDEX");
@@ -57,8 +58,12 @@ public class TestcaseService {
         String scriptDest = testcaseDir+"/"+scriptname;
         String paramfileSource = Address.getUserParamFile(username)+paramfile;
         String paramfileDest = testcaseDir+"/"+paramfile;
-        FileUtil.copyFileUsingFileStreams(scriptSource,scriptDest);
-        FileUtil.copyFileUsingFileStreams(paramfileSource,paramfileDest);
+        if(scriptname!=null && !scriptname.equals("")){
+            FileUtil.copyFileUsingFileStreams(scriptSource,scriptDest);
+        }
+        if(paramfile!=null && !paramfile.equals("")){
+            FileUtil.copyFileUsingFileStreams(paramfileSource,paramfileDest);
+        }
         Testcase testcase = new Testcase();
         testcase.setName(testcasename);
         testcase.setDate(DateUtil.getNowTime());
@@ -159,4 +164,7 @@ public class TestcaseService {
     }
 
 
+    public String selectDataPathByName(String name){
+        return this.testcaseMapper.selectStatDataPathByName(name);
+    }
 }
