@@ -13,6 +13,7 @@ import com.bupt.service.TestcaseService;
 import com.bupt.util.DateUtil;
 import com.bupt.util.RedisUtil;
 import com.bupt.util.ResponseUtil;
+import com.sun.jersey.multipart.FormDataParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -123,16 +124,16 @@ public class TestRest {
                               @FormParam("REMARK") String remark,
                               @FormParam("SCRIPTNAME") String scriptName,
                               @FormParam("PARAMFILENAME") String paramfileName,
-                              @FormParam("CONCURRENCE") String concurrentMode,
-                              @FormParam("TIMEDELAY") int timeDelay,
-                              @FormParam("THRESHOLD") int threshold,
-                              @FormParam("PRESSUREMODE") int pressureMode,
-                              @FormParam("TPS") int tps,
-                              @FormParam("STEP") int step,
-                              @FormParam("DURATION") int duration,
-                              @FormParam("TARGET") int targetTps,
-                              @FormParam("IP") List<String> ipList,
-                              @FormParam("RATIO") List<Float> ratioList) {
+                              @FormParam("CONCURRENCE") Integer concurrentMode,
+                              @FormParam("TIMEDELAY") Integer timeDelay,
+                              @FormParam("THRESHOLD") Integer threshold,
+                              @FormParam("PRESSUREMODE") Integer pressureMode,
+                              @FormParam("TPS") Integer tps,
+                              @FormParam("STEP") Integer step,
+                              @FormParam("DURATION") Integer duration,
+                              @FormParam("TARGET") Integer targetTps,
+                              @FormParam("IP[]") List<String> ipList,
+                              @FormParam("RATIO[]") List<Float> ratioList) {
         Result result = new Result();
         try {
             //this.testcaseService.updateStatus(TaskStatus.RUNNING.getStatus(),testcaseName);
