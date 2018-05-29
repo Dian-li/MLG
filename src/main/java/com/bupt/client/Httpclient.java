@@ -1,6 +1,7 @@
 package com.bupt.client;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bupt.service.ScriptsService;
 import com.bupt.util.FileUtil;
 import com.sun.net.httpserver.Headers;
 import org.apache.http.*;
@@ -21,6 +22,7 @@ import org.apache.http.entity.*;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.omg.CORBA.portable.InputStream;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -34,6 +36,9 @@ import java.util.List;
 import java.util.Map;
 @Component
 public class Httpclient {
+
+    @Autowired
+    private ScriptsService scriptsService;
 
     public void post(String url, String filepath, Map<String,String> params)throws Exception {
         HttpClient httpclient = HttpClients.createDefault();
@@ -105,8 +110,13 @@ public class Httpclient {
             for(Map.Entry<String,Object> param:params.entrySet()){
                 jsonObject.put(param.getKey(),param.getValue());
             }
-            String fileContext = FileUtil.getFileContext(filename);
-            jsonObject.put("file",fileContext);
+
+            String path = scriptsService.selectPathByName(filename);
+            if(path != null){
+                String fileContext = scriptsService.getScriptContext(path);
+                jsonObject.put("file",fileContext);
+            }
+            //TODO path为null时，返回错误
 
             EntityBuilder entityBuilder = EntityBuilder.create();
             entityBuilder.setText(JSONObject.toJSONString(jsonObject));

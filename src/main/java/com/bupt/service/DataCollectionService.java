@@ -44,7 +44,7 @@ public class DataCollectionService {
                              String paramfileName,
                              Integer concurrenceMode,
                              Integer timedelay,
-                             Integer threshold,
+                             Float threshold,
                              Integer pressureMode,
                              Integer tps,
                              Integer step,
@@ -69,8 +69,9 @@ public class DataCollectionService {
             params.put("concurrenceMode", concurrenceMode);
             params.put("timedelay", timedelay);
             params.put("threshold", threshold);
+            params.put("scriptName", scriptName);
             params.put("pressureMode", pressureMode);
-            params.put("tps", tps * ratioList.get(i));
+            params.put("tps", tps * ratioList.get(i)/100);
             params.put("step", step);
             params.put("duration", duration);
             params.put("targetTps", targetTps);

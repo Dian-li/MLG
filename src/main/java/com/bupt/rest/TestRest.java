@@ -126,7 +126,7 @@ public class TestRest {
                               @FormParam("PARAMFILENAME") String paramfileName,
                               @FormParam("CONCURRENCE") Integer concurrentMode,
                               @FormParam("TIMEDELAY") Integer timeDelay,
-                              @FormParam("THRESHOLD") Integer threshold,
+                              @FormParam("THRESHOLD") Float threshold,
                               @FormParam("PRESSUREMODE") Integer pressureMode,
                               @FormParam("TPS") Integer tps,
                               @FormParam("STEP") Integer step,
@@ -156,7 +156,7 @@ public class TestRest {
         Result result = new Result();
         try {
             this.dataCollectionService.stopCollect();
-            this.testcaseService.updateStatus(TaskStatus.FINISH.getStatus(), testcaseName);
+            //this.testcaseService.updateStatus(TaskStatus.FINISH.getStatus(), testcaseName);
             this.redisUtil.deleteKey(testcaseName + "_CPU");
             this.redisUtil.deleteKey(testcaseName + "_IO");
             this.redisUtil.deleteKey(testcaseName + "_NET");
