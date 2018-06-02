@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <send protocol="HTTP">
+    <wait>1</wait>
+    <host>kaoshi.meet2003.com</host>
+    <url>/index.php?user-app-login</url>
+    <header><![CDATA[GET http://kaoshi.meet2003.com/index.php?user-app-login HTTP/1.1
+Host: kaoshi.meet2003.com
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: PHPSESSID=rp8mcgm2n481b6lerq69g6lia3; exam_psid=rp8mcgm2n481b6lerq69g6lia3
+
+]]></header>
+    <body><![CDATA[]]></body>
+  </send>
+  <recv protocol="HTTP">
+    <wait>1</wait>
+    <status>200</status>
+    <host>kaoshi.meet2003.com</host>
+    <url>/index.php?user-app-login</url>
+    <content_type>text/html; charset=utf-8</content_type>
+    <header><![CDATA[HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 30 May 2018 14:53:27 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Vary: Accept-Encoding
+X-Powered-By: PHP/5.6.31
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+P3P: CP=CAO PSA OUR
+Content-Encoding: gzip
+
+]]></header>
+    <body><![CDATA[458]]></body>
+  </recv>
+  <send protocol="HTTP">
+    <wait>1</wait>
+    <host>kaoshi.meet2003.com</host>
+    <url>/index.php?user-app-login</url>
+    <header><![CDATA[POST http://kaoshi.meet2003.com/index.php?user-app-login HTTP/1.1
+Host: kaoshi.meet2003.com
+Connection: keep-alive
+Content-Length: 124
+Accept: */*
+Origin: http://kaoshi.meet2003.com
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Referer: http://kaoshi.meet2003.com/index.php?user-app-login
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: PHPSESSID=rp8mcgm2n481b6lerq69g6lia3; exam_psid=rp8mcgm2n481b6lerq69g6lia3
+
+]]></header>
+    <body><![CDATA[args%5Busername%5D=peadmin&args%5Buserpassword%5D=peadmin&userlogin=1&userhash=0.9322506133829751&userhash=0.579043806165914
+]]></body>
+  </send>
+  <recv protocol="HTTP">
+    <wait>1</wait>
+    <status>200</status>
+    <host>kaoshi.meet2003.com</host>
+    <url>/index.php?user-app-login</url>
+    <content_type>text/html; charset=utf-8</content_type>
+    <header><![CDATA[HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 30 May 2018 14:57:34 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Vary: Accept-Encoding
+X-Powered-By: PHP/5.6.31
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+P3P: CP=CAO PSA OUR
+Set-Cookie: exam_currentuser=%2598o%2599n%25AC%25A5j%2596kmV%25D5%259B%25AA%25A9%25A0%25A1%25A3%25D6%25AB%25C9%25A9%25A1%2598%2585l%25A7o%2595lZaYp%25D4nbgj%2587%25AB%2598%25A7%25D5%259F%25A6%25A4%25A7%2593%25A8%25D4%25AF%25D3%25A9%259CV%259E%25A4nh%2596lZbki%2592id%2593b%259Aql%2596%25C7mmnl%2595h%2593%259C%2596ipe%25C9fk%2596%25C9hoRr%25A8%259BmkT%25A3%25CA%25AB%25A6%259D%25D1%25A4%25A0%25A6Ym%25A8%259Bi%2599qZe%2593gbf%2596bfbgk%258FehgR%25A0%25ABme%2596pY%25A9%259C%25A5%25A8%25CA%25A7%25D2%259E%25AA%25A3%25D8%25A1%259D%2599%2586m%25ABjho%2583eSm%25A3%259Fiin%2584%25A9%259C%25A9%25AA%259B%25A4%25CF%25A4%25D3%259E%25A1%25A2%25D7%259A%25A1%259A%2586m%25A1jhj%2593kgkb%2597mgo%25D5phkqT%25A8%25C6%25AB%25D7%25A0%25A7%25A2%25D8%25A4%2599%25A7%25D2%2593%25A5%2595Yp%25D4nhlR%25D5%259D%2594%2598%25CF%259F%25A5Xr%25A5o%2592n%259EY%25AB%2599%25D6%25A4%259D%25A4%25D2%25A6%25A1%259D%259C%25A1%25CA%25A1%259A%25A6R%25A0%25A1me%2597hnlpdg%2596l%259F%25AArm%259DS%25A7%259A%25D7%25A5%25A1%259F%25A5%259E%25C5Vl%25A5j%2597nmV%25D4%25A6o%25A3%259A%2599%25A2%2593%25A6%2598oi%2596%2599%259D%2599%25A7%25D5hq%2597m%25A1%25CA%2595dTk%25E2; expires=Thu, 31-May-2018 14:57:34 GMT; Max-Age=86400; path=/
+Content-Encoding: gzip
+
+]]></header>
+    <body><![CDATA[81]]></body>
+  </recv>
+  <send protocol="HTTP">
+    <wait>1</wait>
+    <host>kaoshi.meet2003.com</host>
+    <url>/index.php?user-master-user</url>
+    <header><![CDATA[GET http://kaoshi.meet2003.com/index.php?user-master-user HTTP/1.1
+Host: kaoshi.meet2003.com
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Referer: http://kaoshi.meet2003.com/index.php?user-app-login
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: PHPSESSID=rp8mcgm2n481b6lerq69g6lia3; exam_psid=rp8mcgm2n481b6lerq69g6lia3; exam_currentuser=%2598o%2599n%25AC%25A5j%2596kmV%25D5%259B%25AA%25A9%25A0%25A1%25A3%25D6%25AB%25C9%25A9%25A1%2598%2585l%25A7o%2595lZaYp%25D4nbgj%2587%25AB%2598%25A7%25D5%259F%25A6%25A4%25A7%2593%25A8%25D4%25AF%25D3%25A9%259CV%259E%25A4nh%2596lZbki%2592id%2593b%259Aql%2596%25C7mmnl%2595h%2593%259C%2596ipe%25C9fk%2596%25C9hoRr%25A8%259BmkT%25A3%25CA%25AB%25A6%259D%25D1%25A4%25A0%25A6Ym%25A8%259Bi%2599qZe%2593gbf%2596bfbgk%258FehgR%25A0%25ABme%2596pY%25A9%259C%25A5%25A8%25CA%25A7%25D2%259E%25AA%25A3%25D8%25A1%259D%2599%2586m%25ABjho%2583eSm%25A3%259Fiin%2584%25A9%259C%25A9%25AA%259B%25A4%25CF%25A4%25D3%259E%25A1%25A2%25D7%259A%25A1%259A%2586m%25A1jhj%2593kgkb%2597mgo%25D5phkqT%25A8%25C6%25AB%25D7%25A0%25A7%25A2%25D8%25A4%2599%25A7%25D2%2593%25A5%2595Yp%25D4nhlR%25D5%259D%2594%2598%25CF%259F%25A5Xr%25A5o%2592n%259EY%25AB%2599%25D6%25A4%259D%25A4%25D2%25A6%25A1%259D%259C%25A1%25CA%25A1%259A%25A6R%25A0%25A1me%2597hnlpdg%2596l%259F%25AArm%259DS%25A7%259A%25D7%25A5%25A1%259F%25A5%259E%25C5Vl%25A5j%2597nmV%25D4%25A6o%25A3%259A%2599%25A2%2593%25A6%2598oi%2596%2599%259D%2599%25A7%25D5hq%2597m%25A1%25CA%2595dTk%25E2
+
+]]></header>
+    <body><![CDATA[]]></body>
+  </send>
+  <recv protocol="HTTP">
+    <wait>1</wait>
+    <status>200</status>
+    <host>kaoshi.meet2003.com</host>
+    <url>/index.php?user-master-user</url>
+    <content_type>text/html; charset=utf-8</content_type>
+    <header><![CDATA[HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 30 May 2018 14:57:34 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Vary: Accept-Encoding
+X-Powered-By: PHP/5.6.31
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+Pragma: no-cache
+P3P: CP=CAO PSA OUR
+Content-Encoding: gzip
+
+]]></header>
+    <body><![CDATA[bca]]></body>
+  </recv>
+</root>

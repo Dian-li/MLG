@@ -79,7 +79,7 @@ public class DataCollectionService {
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 LOGGER.info(ipList.get(i) + " start test!");
                 Process proc = null;
-                startCollectData(proc, path, ipList.get(i), user, password, dataPath, testcaseName);
+                startCollectData(proc, path, host, user, password, dataPath, testcaseName);
                 if (proc != null) {
                     processes.add(proc);
                 }
